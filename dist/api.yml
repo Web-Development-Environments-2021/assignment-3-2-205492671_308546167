@@ -1,246 +1,747 @@
+---
 openapi: 3.0.0
 info:
-  title: api
-  description: API for  project
+  title: Soccer API
+  description: This is our soccer API project
+  contact:
+    email: naorsu@post.bgu.ac.il
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-tags:
-  - name: Users
-  - name: Auth
-  - name: League
-  - name: Players
-  - name: Teams
-  - name: Games
+servers:
+- url: https://virtserver.swaggerhub.com/Naorsu/soccerAPI/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://virtserver.swaggerhub.com/Naorsu/lab6/1.0.0
+  description: SwaggerHub API Auto Mocking
 paths:
-  /Register:
+  /auth/register:
     post:
       tags:
-        - Auth
-      summary: Add new user
-      description: A new user from the client is added to the server
+      - auth
+      summary: add a new user
+      description: A json object that contains all user info is added to the data
       requestBody:
-        required: true
+        description: User info to add
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/user'
+        required: true
       responses:
         "201":
-          description: A new user has been added
+          description: User has been created
         "400":
-          description: wrong input parameters
-  /Login:
+          description: invalid input
+        "409":
+          description: User is already exists
+  /auth/login:
     post:
       tags:
-        - Auth
-      summary: Login an exist user
-      description: An exist user login to the system
+      - auth
+      summary: login to server
+      description: sends user name and password to verify to user cardntials
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginScheme"
+              $ref: '#/components/schemas/body'
+        required: true
       responses:
         "200":
-          description: >
-            User was found in the DB and authenitcated successfully.
-            The session ID is returned in a cookie named `session`. 
-            You should include this cookie in subsequent requests
-          # headers:
-          #   Set-Cookie:
-          #     schema:
-          #       type: string
-          #       example: session=87s97sdhgf279293f8w0e9
-            # Note that the Set-Cookie header and securitySchemes are not connected in any way, and the Set-Header definition is for documentation purposes only.
+          description: |
+            User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: invalid input
+        "404":
+          description: couldnt find user name matching that password
+  /user/favorites/matches/{username}:
+    get:
+      tags:
+      - user
+      summary: get user's favorite matches
+      description: return a list of user's favorite future matches
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: returns a list of matches succesfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/match'
+        "404":
+          description: Can not find the user
+  /user/favorites/matches:
+    put:
+      tags:
+      - user
+      summary: update user's favorive matches
+      description: sends user name and match id to append match to user's favorite matches list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_1'
+        required: true
+      responses:
+        "200":
+          description: match has been successfuly added
+        "400":
+          description: invalid input
+        "404":
+          description: couldnt find user name or match id
+  /user/favorites/players/{username}:
+    get:
+      tags:
+      - user
+      summary: get user's favorite players
+      description: return a list of user's favorite players
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: returns a list of user's fav players succesfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/partial_player'
+        "404":
+          description: Can not find the user
+  /user/favorites/players:
+    put:
+      tags:
+      - user
+      summary: update user's favorite player
+      description: sends user name and player id to append player to user's favorite players list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_2'
+        required: true
+      responses:
+        "200":
+          description: player has been successfuly added
+        "400":
+          description: invalid input
+        "404":
+          description: couldnt find user name or player id
+  /user/favorites/teams/{username}:
+    get:
+      tags:
+      - user
+      summary: get user's favorite teams
+      description: return a list of user's favorite teams
+      parameters:
+      - name: username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: returns a list of teams succesfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/team'
+        "404":
+          description: Could not find the user
+  /user/favorites/teams:
+    put:
+      tags:
+      - user
+      summary: update user's favorite team
+      description: sends user name and team id to append team to user's favorite team list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_3'
+        required: true
+      responses:
+        "200":
+          description: team has been successfuly added
+        "400":
+          description: invalid input
+        "404":
+          description: couldnt find user name or team id
+  /user/union_representative/assign_referee:
+    put:
+      tags:
+      - user
+      summary: assign referee role to an existing user
+      description: union repesentative can assign referee role to an existing user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_4'
+        required: true
+      responses:
+        "200":
+          description: The role was assigned successfuly
         "401":
           description: Authentication failed
-  /logout:
-    post:
-      tags:
-        - Auth
-      summary: logout a user from the system and delete his cookie
-      responses:
-        "200":
-          description: "the user has ben successfully logged out"
-  /league/getDetails:
+        "404":
+          description: Username was not found
+  /league:
     get:
       tags:
-        - league
-      summary: Return the details about the current league
+      - league
+      summary: get league current summrized info
+      description: returns an json object with current league params
       responses:
         "200":
-          description: data about the current league returned
+          description: returns an json object with current league params
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/League"
+                $ref: '#/components/schemas/inline_response_200_1'
         "400":
-          description: wrong input parameters
-  /users/favoritePlayers:
-    get:
+          description: didnt find avilable data on league
+  /league/assign_referee:
+    put:
       tags:
-        - Users
-        - Players
-      summary: Return the favorite players that were saved by user
-      parameters:
-      responses:
-        "200":
-          description: data about the user's favorites players returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PlayerPreview"
-        "401":
-          description: user is not authorized
-    post:
-      summary: save player in the favorites list of a user
-      tags:
-        - Users
-        - Players
+      - user
+      summary: assign referee to an existing league
+      description: union repesentative can assign referee role to an existing league
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                playerId:
-                  type: string
-                  description: player's id which the user saved
-                  example: 85
-      responses:
-        "201":
-          description: The player successfully saved as favorite
-        "401":
-          description: user is not authorized
-  /teams/teamFullDetails/{teamId}:
-    get:
-      summary: get full deatils about a team
-      description: useful for team page
-      tags:
-        - Teams
-      parameters:
-        - in: path
-          name: teamId
-          description: team's id
-          required: true
-          schema:
-            type: integer
+              $ref: '#/components/schemas/body_5'
+        required: true
       responses:
         "200":
-          description: data about the team
+          description: The referee was assigned to the league successfuly
+        "401":
+          description: Authentication failed
+        "404":
+          description: The referee's username was not found
+  /player/page{player_id}:
+    get:
+      tags:
+      - player
+      summary: get player's page
+      description: returns a json object with data to fill in the player's page
+      parameters:
+      - name: player_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: returns a json object with data to fill in the player's page
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: '#/components/schemas/player'
         "404":
-          description: teamId is not exists
+          description: player_id not found
+  /team/page{team_id}:
+    get:
+      tags:
+      - team
+      summary: get team's page
+      description: returns a json object with data to fill in the team's page
+      parameters:
+      - name: team_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: returns a json object with data to fill in the team's page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/team'
+        "404":
+          description: team_id not found
+  /league/current_fixture:
+    get:
+      tags:
+      - league
+      summary: get league current fixture
+      description: returns a json object with two arrays- array of pre played matches of the current fixture  and a array of post played matches of the current fixture
+      responses:
+        "200":
+          description: returns a json object with two arrays- array of pre played matches of the current fixture  and a array of post played matches of the current fixture
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "400":
+          description: didnt find avilable data on league
+  /league/matches:
+    get:
+      tags:
+      - league
+      summary: get league season matches
+      description: returns a json object with array of all current season matches
+      responses:
+        "200":
+          description: returns a json object with array of all current season matches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "400":
+          description: didnt find avilable data on league
+  /league/match:
+    post:
+      tags:
+      - league
+      summary: create a new match
+      description: union represatative adds a new match to the league
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_6'
+        required: true
+      responses:
+        "201":
+          description: match has been created
+        "401":
+          description: authentication failed
+        "404":
+          description: one of the parameters you listed wasn't found
+  /player/search:
+    get:
+      tags:
+      - player
+      summary: search player by name
+      description: returns a json object with a list of players with the given name
+      parameters:
+      - name: player_name
+        in: query
+        description: Player full/partial name
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: Lionel Messi
+      - name: sorted
+        in: query
+        description: The type of sort (by team name/by player name), if none present then won't sort
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: Messi
+      - name: filtered_by
+        in: query
+        description: The type of filter (by player position or by team name)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: position
+      - name: filter
+        in: query
+        description: The value to filter
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: goalkeeper
+      responses:
+        "200":
+          description: returns a json object with a list of players with the given name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "404":
+          description: player_name not found
+  /team/search:
+    get:
+      tags:
+      - team
+      summary: search team by name
+      description: returns a json object with a list of teams with the given name
+      parameters:
+      - name: team_name
+        in: query
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: sorted
+        in: query
+        description: The type of sort ('True'/'False') if 'Fasle' present then won't sort
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: "True"
+      responses:
+        "200":
+          description: returns a json object with a list of teams with the given name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_5'
+        "404":
+          description: team_name not found
 components:
   schemas:
-    User:
+    user:
+      required:
+      - country
+      - email
+      - firstname
+      - lastname
+      - password
+      - profile_picture
+      - username
       type: object
       properties:
         username:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins between 3 to 8 letters only
-          example: ladygaga
+          description: Must have 3-8 characters, letters only
+          example: KingMessi
         firstname:
           type: string
-          description: user's first name
-          example: Stefani
+          example: May
         lastname:
           type: string
-          description: user's last name
-          example: Germanotta
+          example: Suban
         country:
           type: string
-          description: user's country
-          example: USA
         password:
           maxLength: 10
           minLength: 5
           type: string
-          description:
-            password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
+          description: Must have 5-10 characters, should contain at least one digit and one special character
           format: password
-          example: lady@56
+          example: my*pass21
         email:
-          pattern: email
           type: string
-          description: user's email
-          example: ladygaga@gmail.com
-        image-url:
-          pattern: URL
+          format: email
+          example: Suban@gmail.com
+        profile picture:
           type: string
-          description: URL for the user's image
-          example: https://cloudinary.com/
-      description: Model containing user info
-    LoginScheme:
+          description: Link to the profile image, recommended to add picture from cloudinary
+          format: URL
+          example: https://res.cloudinary.com/dswkzsdoq/image/upload/v1620738869/20171122_132608_zvrw97.jpg
+    match:
+      required:
+      - away_team
+      - date
+      - home_team
+      - match_id
+      - referee_name
+      type: object
+      properties:
+        match_id:
+          type: string
+          description: unique match id
+          example: RX23231F
+        home_team:
+          type: string
+          description: The host team's name
+        away_team:
+          type: string
+          description: The guest team's name
+        referee_team:
+          type: string
+          description: The referee's name
+        date:
+          type: string
+          description: The match's date
+          format: date
+    player:
+      required:
+      - common_name
+      - country
+      - date_of_birth
+      - fullname
+      - height
+      - nationality
+      - picture
+      - player_id
+      - position_num
+      - team_name
+      type: object
+      properties:
+        player_id:
+          type: string
+          description: The player's id
+        fullname:
+          type: string
+          description: The player's full name
+        team_name:
+          type: string
+          description: The player's team name
+        picture:
+          type: string
+          description: The player's url picture
+          format: URL
+        position_num:
+          type: string
+          description: Player's position number
+        common_name:
+          type: string
+          description: The player's common name
+        nationality:
+          type: string
+          description: The player's nationality
+        date_of_birth:
+          type: string
+          description: The player's date of birth
+          format: date
+        country:
+          type: string
+          description: The player's country
+        height:
+          type: string
+          description: The player's height
+    partial_player:
+      required:
+      - fullname
+      - picture
+      - player_id
+      - position_num
+      - team_name
+      type: object
+      properties:
+        player_id:
+          type: string
+          description: The player's id
+        fullname:
+          type: string
+          description: The player's full name
+        team_name:
+          type: string
+          description: The player's team name
+        picture:
+          type: string
+          description: The player's url picture
+          format: URL
+        position_num:
+          type: string
+          description: Player's position number
+    team:
+      required:
+      - matches
+      - team_id
+      - team_manager
+      - team_players
+      type: object
+      properties:
+        team_id:
+          type: string
+          description: The team's id
+        team_players:
+          type: array
+          description: The players of the favorite players
+          items:
+            $ref: '#/components/schemas/partial_player'
+        matches:
+          type: array
+          description: The team's matches
+          items:
+            $ref: '#/components/schemas/match'
+    partial_team:
+      required:
+      - team_id
+      - team_logo
+      - team_name
+      type: object
+      properties:
+        team_id:
+          type: string
+          description: The team's id
+        team_name:
+          type: string
+          description: The team's name
+        team_logo:
+          type: string
+          description: The url of team's logo image
+          format: URL
+    body:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          description: Must have 3-8 characters, letters only
+          example: KingMessi
+        password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          description: Must have 5-10 characters, should contain at least one digit and one special character
+          format: password
+          example: my*pass21
+    inline_response_200:
+      type: object
+      properties:
+        roles:
+          type: array
+          description: The role list of the user
+          example:
+          - referee
+          - union represntative
+          - player
+          items:
+            type: string
+    body_1:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          description: Must have 3-8 characters, letters only
+          example: KingMessi
+        match_id:
+          type: string
+          description: must be unique match identitfier
+          example: RX23231F
+    body_2:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          description: Must have 3-8 characters, letters only
+          example: KingMessi
+        player_id:
+          type: string
+          description: must be unique player identitfier
+          example: FP1010
+    body_3:
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          description: Must have 3-8 characters, letters only
+          example: KingMessi
+        player_id:
+          type: string
+          description: must be unique team identitfier
+          example: TM1010
+    body_4:
       type: object
       properties:
         username:
           type: string
-          minLength: 3
-          maxLength: 8
-          description: username conatins letters only
-          example: naorbe
-        password:
-          type: string
-          minLength: 5
-          maxLength: 10
-          format: password
-          description: password conatins at least one number and one special char
-          example: naor@55
-    League:
+          description: The username of the user to be assigned as a referee
+    inline_response_200_1:
       type: object
       properties:
-        league_name:
+        season_name:
           type: string
-          description: league name
-          example: Superliga
-        current_season_name:
+          description: current runnig season
+          example: 2012/2013
+        stage_name:
           type: string
-          description: current season name
-          example: "2020/2021"
-        current_stage_name:
-          type: string
-          description: current stage name
-          example: Championship Round
-    PlayerPreview:
+          description: current runing fixture
+          example: fixture 14
+        match:
+          $ref: '#/components/schemas/match'
+    body_5:
       type: object
       properties:
-        name:
+        username:
           type: string
-          description: player's name
-          example: Sten Michael Grytebust
-        image:
-          type: string
-          description: player's image
-          format: URL
-          example: https://cdn.sportmonks.com/images/soccer/players/11/84587.png
-        position:
-          type: integer
-          description: player's position in team
-          example: 1
-        team_name:
-          type: string
-          description: player's team name
-          example: København
-    Team:
+          description: The username of the user to be assigned as a referee
+    inline_response_200_2:
       type: object
       properties:
-        name:
+        pre_played_matches:
+          type: array
+          description: pre played matches
+          items:
+            $ref: '#/components/schemas/match'
+        post_played_matches:
+          type: array
+          description: post played matches
+          items:
+            $ref: '#/components/schemas/match'
+    inline_response_200_3:
+      type: object
+      properties:
+        season_matches:
+          type: array
+          description: all season matches
+          items:
+            $ref: '#/components/schemas/match'
+    body_6:
+      type: object
+      properties:
+        home_team_name:
           type: string
-          description: team name
-          example: København
-        players:
+          description: The home team name
+          example: Maccabi Haifa
+        away_team_name:
+          type: string
+          description: The away team name
+          example: Bnei Lod
+        date:
+          type: string
+          description: The date of the match
+          format: date-time
+        referee_name:
+          type: string
+          description: The referee name
+          example: Alon Yeffet
+    inline_response_200_4:
+      properties:
+        search_player:
           type: array
           items:
-            type: object
-            $ref: "#/components/schemas/PlayerPreview"
+            $ref: '#/components/schemas/partial_player'
+    inline_response_200_5:
+      properties:
+        search_team:
+          type: array
+          items:
+            $ref: '#/components/schemas/partial_team'
