@@ -9,7 +9,7 @@ router.get("/player/search", async (req, res, next) => {
     try {
       const results = await players_utils.getPlayersByName(req.query.player_name);
       if (req.query.filtered_by && req.query.filtered_by == "position"){
-        results = search_utils.filterArray(results, "position", req.query.filter);
+        results = search_utils.filterArray(results, "position_num", req.query.filter);
       }
       if (req.query.filtered_by && req.query.filtered_by == "team name"){
         results = search_utils.filterArray(results, "team_name", req.query.filter);
@@ -18,7 +18,7 @@ router.get("/player/search", async (req, res, next) => {
         search_utils.sortArray(results, "team_name");
       }
       if (req.query.sorted && req.query.sorted == "player name"){
-        search_utils.sortArray(results, "name");
+        search_utils.sortArray(results, "fullname");
       }
       res.status(200).send(results);
     } catch (error) {
@@ -35,6 +35,16 @@ router.get("/team/search", async (req, res, next) => {
                 return a.fullname - b.fullname;
             })
         }
+        res.status(200).send(results);
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+router.get("/player/page/:player_id", async (req, res, next) => {
+    try {
+        const results = await players_utils.getPlayerFullInfo(req.params.player_id);        
         res.status(200).send(results);
     } catch (error) {
         next(error);

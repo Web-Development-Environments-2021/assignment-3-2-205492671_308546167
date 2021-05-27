@@ -212,7 +212,7 @@ paths:
           description: Authentication failed
         "404":
           description: The referee's username was not found
-  /player/page{player_id}:
+  /player/page/{player_id}:
     get:
       tags:
       - player
@@ -235,7 +235,7 @@ paths:
                 $ref: '#/components/schemas/player'
         "404":
           description: player_id not found
-  /team/page{team_id}:
+  /team/page/{team_id}:
     get:
       tags:
       - team
