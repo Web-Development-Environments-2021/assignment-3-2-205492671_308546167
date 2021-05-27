@@ -13,5 +13,40 @@ async function getFavoritePlayers(user_id) {
   return player_ids;
 }
 
+async function getUserRoles(user_id) {
+  const names_list = [];
+  const roles = (
+    await DButils.execQuery(
+      `SELECT role_name FROM roles WHERE user_id = '${user_id}'`
+    )
+  );
+  
+  // check that user_id exists
+  if (!roles) {
+    throw { status: 404, message: "user_id doesn't exist" };
+  }
+  roles.map((role)=> names_list.push(role.role_name));
+  return names_list;
+}
+
+async function assignRole(user_id, role_name) {
+  await DButils.execQuery(
+    `INSERT INTO roles VALUES('${user_id}','${role_name}')`
+  );
+}
+
+async function getUserIdByUsername(username) {
+  const user_id = await DButils.execQuery(
+    `select user_id from users where username='${username}'`
+  );
+  if(!user_id){
+    return "not found";
+  }
+  return user_id[0].user_id;
+}
+
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
+exports.getUserRoles = getUserRoles;
+exports.assignRole = assignRole;
+exports.getUserIdByUsername = getUserIdByUsername;
