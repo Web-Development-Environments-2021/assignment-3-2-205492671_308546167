@@ -1,4 +1,5 @@
 const DButils = require("./DButils");
+const users_utils = require("./users_utils");
 
 async function markPlayerAsFavorite(user_id, player_id) {
   await DButils.execQuery(
@@ -45,8 +46,16 @@ async function getUserIdByUsername(username) {
   return user_id[0].user_id;
 }
 
+async function isRole(user_id, role_name) {
+  let user_roles = []
+  user_roles = await users_utils.getUserRoles(user_id);
+  const is_referee = user_roles.find(element => element ==role_name);
+  return is_referee;
+}
+
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
 exports.getUserRoles = getUserRoles;
 exports.assignRole = assignRole;
 exports.getUserIdByUsername = getUserIdByUsername;
+exports.isRole = isRole;

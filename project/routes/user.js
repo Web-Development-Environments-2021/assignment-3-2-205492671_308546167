@@ -56,9 +56,7 @@ router.get("/favorites/players", async (req, res, next) => {
 router.use("/union_representative", async function(req,res,next){
   try{
     const user_id = req.session.user_id;
-    let user_roles = []
-    user_roles = await users_utils.getUserRoles(user_id);
-    const is_union_rep = user_roles.find(element => element =='union_rep');
+    const is_union_rep = await users_utils.isRole(user_id,'union_rep');
     if(!is_union_rep){
       res.status(401).send("Only union representatives allow to assign referee");
     }
@@ -76,10 +74,18 @@ router.put("/union_representative/assign_referee", async (req, res, next) => {
     if(ref_user_id == "not found"){
       res.status(404).send("Username was not found");
     }
-    await users_utils.assignRole(ref_user_id,"referee")
-    res.status(200).send("The role was assigned successfuly");
+    //check if the user to assign referree is already referee
+    const is_referee = await users_utils.isRole(ref_user_id,'referee');
+    if(is_referee){
+      res.status(401).send("user is already referee");
+    }
+    else{
+      await users_utils.assignRole(ref_user_id,"referee")
+      res.status(200).send("The role was assigned successfuly");
+    }
+
   } catch (error) {
-    // next(error);
+      next(error);
   }
 
 });
