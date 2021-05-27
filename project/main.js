@@ -51,6 +51,7 @@ const auth = require("./routes/auth");
 const user = require("./routes/user");
 const league = require("./routes/league");
 const teams = require("./routes/teams");
+const search = require("./routes/search");
 
 //#endregion
 
@@ -79,6 +80,7 @@ app.use("/user", user);
 app.use("/league", league);
 app.use("/teams", teams);
 app.use("/auth", auth);
+app.use(search);
 
 app.use(function (err, req, res, next) {
   console.error(err);
