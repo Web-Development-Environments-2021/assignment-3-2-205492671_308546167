@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
+const users_utils = require("../routes/utils/users_utils")
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -52,20 +53,9 @@ router.post("/login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
-   
-    const roles = (
-      await DButils.execQuery(
-        `SELECT role_name FROM roles WHERE user_id = '${user.user_id}'`
-      )
-    );
-    
-    // check that user_id exists
-    if (!roles) {
-      throw { status: 401, message: "user_id doesn't exist" };
-    }
-    const names_list = [];
-    roles.map((role)=> names_list.push(role.role_name));
         
+    const names_list = await users_utils.getUserRoles(user.user_id);
+
     // return roles
     res.status(200).send(names_list);
   } catch (error) {
