@@ -9,7 +9,6 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-
 paths:
   /auth/register:
     post:
@@ -435,9 +434,34 @@ components:
           description: Link to the profile image, recommended to add picture from cloudinary
           format: URL
           example: https://res.cloudinary.com/dswkzsdoq/image/upload/v1620738869/20171122_132608_zvrw97.jpg
+    event:
+      required:
+      - date
+      - details
+      - event_type
+      - min_in_game
+      type: object
+      properties:
+        date:
+          type: string
+          description: The event's date
+          format: date
+        min_in_game:
+          type: string
+          description: The minute in the game when the event occured
+          example: "12"
+        event_type:
+          type: string
+          description: The type of the event
+          example: yellow card
+        details:
+          type: string
+          description: The description of the event
+          example: Messi foueled Ronaldo and got a yellow card
     match:
       required:
       - away_team
+      - court
       - date
       - home_team
       - match_id
@@ -451,16 +475,28 @@ components:
         home_team:
           type: string
           description: The host team's name
+          example: Hapoel Tel-Aviv
         away_team:
           type: string
           description: The guest team's name
+          example: Hapoel Beer-Sheva
+        court:
+          type: string
+          description: The court's id
+          example: "1121"
         referee_team:
           type: string
           description: The referee's name
+          example: Ron
         date:
           type: string
           description: The match's date
           format: date
+        eventlog:
+          type: array
+          description: The log events of the match
+          items:
+            $ref: '#/components/schemas/event'
     player:
       required:
       - common_name
