@@ -41,7 +41,7 @@ router.post("/login", async (req, res, next) => {
         `SELECT * FROM users WHERE username = '${req.body.username}'`
       )
     )[0];
-    // user = user[0];
+
     console.log(user);
 
     // check that username exists & the password is correct
@@ -49,11 +49,25 @@ router.post("/login", async (req, res, next) => {
       throw { status: 401, message: "Username or Password incorrect" };
     }
 
+
     // Set cookie
     req.session.user_id = user.user_id;
-
-    // return cookie
-    res.status(200).send("login succeeded");
+   
+    const roles = (
+      await DButils.execQuery(
+        `SELECT role_name FROM roles WHERE user_id = '${user.user_id}'`
+      )
+    );
+    
+    // check that user_id exists
+    if (!roles) {
+      throw { status: 401, message: "user_id doesn't exist" };
+    }
+    const names_list = [];
+    roles.map((role)=> names_list.push(role.role_name));
+        
+    // return roles
+    res.status(200).send(names_list);
   } catch (error) {
     next(error);
   }
