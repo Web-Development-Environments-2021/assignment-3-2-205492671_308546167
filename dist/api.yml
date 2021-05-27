@@ -9,11 +9,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
-servers:
-- url: https://virtserver.swaggerhub.com/Naorsu/soccerAPI/1.0.0
-  description: SwaggerHub API Auto Mocking
-- url: https://virtserver.swaggerhub.com/Naorsu/lab6/1.0.0
-  description: SwaggerHub API Auto Mocking
+
 paths:
   /auth/register:
     post:
@@ -59,20 +55,12 @@ paths:
           description: invalid input
         "404":
           description: couldnt find user name matching that password
-  /user/favorites/matches/{username}:
+  /user/favorites/matches:
     get:
       tags:
       - user
       summary: get user's favorite matches
       description: return a list of user's favorite future matches
-      parameters:
-      - name: username
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
       responses:
         "200":
           description: returns a list of matches succesfully
@@ -84,7 +72,6 @@ paths:
                   $ref: '#/components/schemas/match'
         "404":
           description: Can not find the user
-  /user/favorites/matches:
     put:
       tags:
       - user
@@ -103,20 +90,12 @@ paths:
           description: invalid input
         "404":
           description: couldnt find user name or match id
-  /user/favorites/players/{username}:
+  /user/favorites/players:
     get:
       tags:
       - user
       summary: get user's favorite players
       description: return a list of user's favorite players
-      parameters:
-      - name: username
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
       responses:
         "200":
           description: returns a list of user's fav players succesfully
@@ -128,7 +107,6 @@ paths:
                   $ref: '#/components/schemas/partial_player'
         "404":
           description: Can not find the user
-  /user/favorites/players:
     put:
       tags:
       - user
@@ -147,20 +125,12 @@ paths:
           description: invalid input
         "404":
           description: couldnt find user name or player id
-  /user/favorites/teams/{username}:
+  /user/favorites/teams:
     get:
       tags:
       - user
       summary: get user's favorite teams
       description: return a list of user's favorite teams
-      parameters:
-      - name: username
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
       responses:
         "200":
           description: returns a list of teams succesfully
@@ -172,7 +142,6 @@ paths:
                   $ref: '#/components/schemas/team'
         "404":
           description: Could not find the user
-  /user/favorites/teams:
     put:
       tags:
       - user
