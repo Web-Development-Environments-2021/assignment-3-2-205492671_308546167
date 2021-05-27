@@ -497,6 +497,10 @@ components:
           description: The log events of the match
           items:
             $ref: '#/components/schemas/event'
+        score:
+          type: string
+          description: The match's score, (home_team-away_team)
+          example: 3-0
     player:
       required:
       - common_name
