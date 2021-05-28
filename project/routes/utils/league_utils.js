@@ -1,4 +1,5 @@
 const axios = require("axios");
+const DButils = require("./DButils");
 const LEAGUE_ID = 271;
 
 async function getLeagueDetails() {
@@ -26,4 +27,17 @@ async function getLeagueDetails() {
     // next game details should come from DB
   };
 }
+
+async function getLeagueId() {
+  return LEAGUE_ID;
+}
+
+async function assignRefereeToLeague(ref_user_id, league_id) {
+  await DButils.execQuery(
+    `INSERT INTO league_referees VALUES('${ref_user_id}','${league_id}')`
+  );
+}
+
 exports.getLeagueDetails = getLeagueDetails;
+exports.getLeagueId= getLeagueId;
+exports.assignRefereeToLeague = assignRefereeToLeague;
