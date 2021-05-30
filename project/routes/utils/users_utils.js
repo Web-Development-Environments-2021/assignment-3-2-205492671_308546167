@@ -40,11 +40,19 @@ async function getUserIdByUsername(username) {
   const user_id = await DButils.execQuery(
     `select user_id from users where username='${username}'`
   );
-  if(!user_id){
+  if(user_id.length == 0){
     return "not found";
   }
   return user_id[0].user_id;
 }
+
+async function getRefLeague(id) {
+  const league_id = await DButils.execQuery(
+    `select league_id from league_referees where user_id='${id}'`
+  );
+  return league_id;
+}
+
 
 async function isRole(user_id, role_name) {
   let user_roles = []
@@ -59,3 +67,4 @@ exports.getUserRoles = getUserRoles;
 exports.assignRole = assignRole;
 exports.getUserIdByUsername = getUserIdByUsername;
 exports.isRole = isRole;
+exports.getRefLeague = getRefLeague;

@@ -7,3 +7,5 @@ todo list:
 - validations
 - fix hight to weight in full player details
 - cahnged get page url in yaml/.. need to change in swagger
+- cahnged careate match url in yaml/.. need to change in swagger
+- cahnged assighn ref to league url in yaml/.. need to change in swagger

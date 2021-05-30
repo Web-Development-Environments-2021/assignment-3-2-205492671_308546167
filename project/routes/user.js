@@ -3,6 +3,10 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
+const union_rep = require("./union_representative");
+router.use("/union_representative", union_rep);
+
+
 
 /**
  * Authenticate all incoming requests by middleware
@@ -51,43 +55,6 @@ router.get("/favorites/players", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
-
-router.use("/union_representative", async function(req,res,next){
-  try{
-    const user_id = req.session.user_id;
-    const is_union_rep = await users_utils.isRole(user_id,'union_rep');
-    if(!is_union_rep){
-      res.status(401).send("Only union representatives allow to assign referee");
-    }
-    next();
-  }
-  catch (error) {
-    next(error);
-  }
-  
-});
-
-router.put("/union_representative/assign_referee", async (req, res, next) => {
-  try{
-    const ref_user_id = await users_utils.getUserIdByUsername(req.body.username);
-    if(ref_user_id == "not found"){
-      res.status(404).send("Username was not found");
-    }
-    //check if the user to assign referree is already referee
-    const is_referee = await users_utils.isRole(ref_user_id,'referee');
-    if(is_referee){
-      res.status(401).send("user is already referee");
-    }
-    else{
-      await users_utils.assignRole(ref_user_id,"referee")
-      res.status(200).send("The role was assigned successfuly");
-    }
-
-  } catch (error) {
-      next(error);
-  }
-
 });
 
 module.exports = router;

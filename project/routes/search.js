@@ -28,7 +28,7 @@ router.get("/player/search", async (req, res, next) => {
 
 router.get("/team/search", async (req, res, next) => {
     try {
-        const results = await teams_utils.getTeamsByName(req.query.team_name);
+        const results = teams_utils.extractRelevantTeamData(await teams_utils.getTeamsByName(req.query.team_name));
         console.log(results)
         if (req.query.sorted){
             search_utils.sortArray(results, function(a,b){

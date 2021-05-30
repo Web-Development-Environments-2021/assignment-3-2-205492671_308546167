@@ -193,7 +193,7 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_1'
         "400":
           description: didnt find avilable data on league
-  /league/assign_referee:
+  /user/union_representative/assign_referee_league:
     put:
       tags:
       - user
@@ -288,7 +288,7 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_3'
         "400":
           description: didnt find avilable data on league
-  /league/match:
+  /user/union_representative/match:
     post:
       tags:
       - league

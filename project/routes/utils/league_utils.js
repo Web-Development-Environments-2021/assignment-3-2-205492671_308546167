@@ -38,6 +38,16 @@ async function assignRefereeToLeague(ref_user_id, league_id) {
   );
 }
 
+async function getleaguesOfTeam(team_id){
+  const leagues = await axios.get(`${api_domain}/teams/${team_id}/current`, {
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
+  return leagues.data.data;
+}
+
 exports.getLeagueDetails = getLeagueDetails;
 exports.getLeagueId= getLeagueId;
 exports.assignRefereeToLeague = assignRefereeToLeague;
+exports.getleaguesOfTeam = getleaguesOfTeam;
