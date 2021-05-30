@@ -80,31 +80,44 @@ router.post("/match", async (req, res, next) => {
         }
         let home_team = ht[0];
         let away_team = at[0];
-        // let home_team_leagues = await league_utils.getleaguesOfTeam(home_team.id);
-        // let away_team_leagues = await league_utils.getleaguesOfTeam(away_team.id);
+        let home_team_leagues = await league_utils.getleaguesOfTeam(home_team.id);
+        let away_team_leagues = await league_utils.getleaguesOfTeam(away_team.id);
         let league_id = await league_utils.getLeagueId();
-        // if (!home_team_leagues.includes(league_id) || !away_team_leagues.includes(league_id)){
-        //     res.status(404).send("one of the params you listed was not found");
-        //     return;
-        // }
+        if (!home_team_leagues.includes(league_id) || !away_team_leagues.includes(league_id)){
+            res.status(404).send("one of the params you listed was not found");
+            return;
+        }
         // make sure no games are set in this day
-        // let number_of_home_team_matches = await team_utils.teamMatchesOnDay(home_team_id, req.body.date).length;
-        // let number_of_away_team_matches = await team_utils.teamMatchesOnDay(away_team_id, req.body.date).length;
-        // if (number_of_home_team_matches>0 || number_of_away_team_matches>0){
-        //     res.status(404).send("one of the params you listed was not found");
-        //     return;
-        // }
+        let number_of_home_team_matches = await team_utils.teamMatchesOnDay(req.body.home_team_name, req.body.date);
+        let number_of_away_team_matches = await team_utils.teamMatchesOnDay(req.body.away_team_name, req.body.date);
+        if (number_of_home_team_matches.length>0 || number_of_away_team_matches.length>0){
+            res.status(404).send("one of the params you listed was not found");
+            return;
+        }
         // make sure ref is in league
-        // let ref_id = await users_utils.getUserIdByUsername(req.body.referee_name);
-        // let number_ref_matches = (await users_utils.getRefLeague(ref_id)).length;
-        // if (number_ref_matches == 0){
-        //     res.status(404).send("one of the params you listed was not found");
-        //     return;
-        // }
-        // 4) make sure he dosent have a match in that day
-        // 5) check latest fixture of teams and assign it to the new match
+        let ref_id = await users_utils.getUserIdByUsername(req.body.referee_name);
+        if (ref_id == "not found"){
+            res.status(404).send("one of the params you listed was not found");
+            return;    
+        }
+        let ref_league = (await users_utils.getRefLeague(ref_id));
+        if (ref_league == 0 || ref_league[0].league_id != league_id){
+            res.status(404).send("one of the params you listed was not found");
+            return;
+        }
+        // check latest fixture of teams and assign it to the new match
+        let home_fixture = -1;
+        let away_fixture = -1;
+        let latest_match_home = await team_utils.getTeamLatestMatch(req.body.home_team_name);
+        if (latest_match_home.length != 0){
+            home_fixture = latest_match_home[0];
+        }
+        let latest_match_away = await team_utils.getTeamLatestMatch(req.body.away_team_name);
+        if (latest_match_home.length != 0){
+            home_fixture = latest_match_home[0];
+        }
+        let fixture = Math.max(latest_match_away[0].LF, latest_match_home[0].LF)+1;
         // check court of home team
-        // let match_court = await team_utils.getTeamsCourt(req.body.home_team_name);
         let match_court = home_team.venue_id
         // add match (home team, away team, ref, court, date, fixture)
         match_utils.addMatch({
@@ -112,7 +125,7 @@ router.post("/match", async (req, res, next) => {
             away_team: req.body.away_team_name,
             league_id: league_id,
             season: "2020/2021",
-            fixture: 0,
+            fixture: fixture,
             court: match_court,
             referee_name: req.body.referee_name,
             date: req.body.date,

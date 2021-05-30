@@ -4,15 +4,6 @@ const DButils = require("./DButils");
 
 // const TEAM_ID = "85";
 
-async function getTeamId(team_name) {
-  const team = await axios.get(`${api_domain}/teams/search/${team_name}`, {
-    params: {
-      api_token: process.env.api_token,
-    },
-  });
-  return team.data.data[0].id;
-}
-
 
 async function getTeamsByName(team_name) {
     const teams = await axios.get(`${api_domain}/teams/search/${team_name}`, {
@@ -34,23 +25,28 @@ function extractRelevantTeamData(teams) {
     });
 }
 
-async function teamMatchesOnDay(team_id, date){
+async function teamMatchesOnDay(team_name, date){
   const matches_in_date = await DButils.execQuery(
-    `select match_id from match where date='${date}' AND (home_team = '${team_id} OR away_team = '${team_id}')'`
+    `select match_id from match where date='${date}' AND (home_team = '${team_name}' OR away_team = '${team_name}')`
   );
   return matches_in_date;
 } 
 
-async function getTeamsCourt(team_name) {
-  const teams = await axios.get(`${api_domain}/teams/search/${team_name}`, {
-    params: {
-      api_token: process.env.api_token,
-    },
-  });
-  return teams.data.data[0].venue_id;
+async function teamMatchesOnDay(team_name, date){
+  const matches_in_date = await DButils.execQuery(
+    `select match_id from match where date='${date}' AND (home_team = '${team_name}' OR away_team = '${team_name}')`
+  );
+  return matches_in_date;
+} 
+async function getTeamLatestMatch(team_name){
+  
+  const latestMatches = await DButils.execQuery(
+    `select MAX(fixture) AS LF from match where home_team = '${team_name}' OR away_team = '${team_name}'`
+  );
+  return latestMatches;
 }
-
 
 exports.getTeamsByName = getTeamsByName;
 exports.teamMatchesOnDay = teamMatchesOnDay;
 exports.extractRelevantTeamData = extractRelevantTeamData;
+exports.getTeamLatestMatch = getTeamLatestMatch;

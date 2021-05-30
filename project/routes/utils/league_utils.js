@@ -1,6 +1,7 @@
 const axios = require("axios");
 const DButils = require("./DButils");
 const LEAGUE_ID = 271;
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 async function getLeagueDetails() {
   const league = await axios.get(
@@ -44,7 +45,9 @@ async function getleaguesOfTeam(team_id){
       api_token: process.env.api_token,
     },
   });
-  return leagues.data.data;
+  league_ids = [];
+  leagues.data.data.map(l => league_ids.push(l.league_id));
+  return league_ids;
 }
 
 exports.getLeagueDetails = getLeagueDetails;
