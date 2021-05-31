@@ -178,7 +178,7 @@ paths:
           description: Authentication failed
         "404":
           description: Username was not found
-  /league:
+  /league/summary:
     get:
       tags:
       - league

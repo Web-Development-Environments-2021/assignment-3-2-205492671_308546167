@@ -4,10 +4,10 @@ const league_utils = require("./utils/league_utils");
 const match_utils = require("./utils/match_utils");
 
 
-router.get("/getDetails", async (req, res, next) => {
+router.get("/summary", async (req, res, next) => {
   try {
     const league_details = await league_utils.getLeagueDetails();
-    res.send(league_details);
+    res.status(200).send(league_details);
   } catch (error) {
     next(error);
   }

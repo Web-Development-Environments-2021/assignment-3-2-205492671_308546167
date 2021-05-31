@@ -27,7 +27,7 @@ function extractRelevantData(matches){
 
 async function getCurrentFixture(league_id){
   const current_matches = await DButils.execQuery(
-      `SELECT * FROM match WHERE fixture = ( SELECT MAX(fixture) AS CF FROM match WHERE league = '${league_id}' AND score IS NOT NULL)`)
+      `SELECT * FROM match WHERE fixture = ( SELECT MAX(fixture) AS CF FROM match WHERE league = '${league_id}' AND score IS NOT NULL) ORDER BY date DESC`)
 
   return current_matches;
 }

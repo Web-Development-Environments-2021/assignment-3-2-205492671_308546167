@@ -1,30 +1,18 @@
 const axios = require("axios");
 const DButils = require("./DButils");
+const match_utils = require("./match_utils");
 const LEAGUE_ID = 271;
+const LEAGUE_NAME = "SUPER LEAGUE";
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const CURRENT_SEASON = "2020/2021";
 
 async function getLeagueDetails() {
-  const league = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/leagues/${LEAGUE_ID}`,
-    {
-      params: {
-        include: "season",
-        api_token: process.env.api_token,
-      },
-    }
-  );
-  const stage = await axios.get(
-    `https://soccer.sportmonks.com/api/v2.0/stages/${league.data.data.current_stage_id}`,
-    {
-      params: {
-        api_token: process.env.api_token,
-      },
-    }
-  );
+  let current_fixture = await match_utils.getCurrentFixture(LEAGUE_ID);
   return {
-    league_name: league.data.data.name,
-    current_season_name: league.data.data.season.data.name,
-    current_stage_name: stage.data.data.name,
+    league_name: LEAGUE_NAME,
+    season_name: CURRENT_SEASON,
+    stage_name: current_fixture[0].fixture,
+    match: current_fixture[0]
     // next game details should come from DB
   };
 }
