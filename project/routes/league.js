@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const league_utils = require("./utils/league_utils");
-const users_utils = require("./utils/users_utils");
 const match_utils = require("./utils/match_utils");
 
 
