@@ -50,7 +50,16 @@ async function getleaguesOfTeam(team_id){
   return league_ids;
 }
 
+async function getLeagueMatches(league_id){
+  const matches = await DButils.execQuery(
+    `SELECT * FROM match WHERE league = '${league_id}'`
+  );
+  return matches;
+}
+
+
 exports.getLeagueDetails = getLeagueDetails;
 exports.getLeagueId= getLeagueId;
 exports.assignRefereeToLeague = assignRefereeToLeague;
 exports.getleaguesOfTeam = getleaguesOfTeam;
+exports.getLeagueMatches = getLeagueMatches;

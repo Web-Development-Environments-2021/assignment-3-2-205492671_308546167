@@ -78,7 +78,7 @@ app.get("/alive", (req, res) => res.send("I'm alive"));
 // Routings
 app.use("/user", user);
 app.use("/league", league);
-app.use("/teams", teams);
+app.use("/team", teams);
 app.use("/auth", auth);
 app.use(search);
 

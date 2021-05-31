@@ -32,12 +32,13 @@ async function teamMatchesOnDay(team_name, date){
   return matches_in_date;
 } 
 
-async function teamMatchesOnDay(team_name, date){
-  const matches_in_date = await DButils.execQuery(
-    `select match_id from match where date='${date}' AND (home_team = '${team_name}' OR away_team = '${team_name}')`
+async function teamSeasonMatches(team_name, season){
+  const matches = await DButils.execQuery(
+    `select * from match where season='${season}' AND (home_team = '${team_name}' OR away_team = '${team_name}')`
   );
-  return matches_in_date;
+  return matches;
 } 
+
 async function getTeamLatestMatch(team_name){
   
   const latestMatches = await DButils.execQuery(
@@ -50,3 +51,4 @@ exports.getTeamsByName = getTeamsByName;
 exports.teamMatchesOnDay = teamMatchesOnDay;
 exports.extractRelevantTeamData = extractRelevantTeamData;
 exports.getTeamLatestMatch = getTeamLatestMatch;
+exports.teamSeasonMatches = teamSeasonMatches;

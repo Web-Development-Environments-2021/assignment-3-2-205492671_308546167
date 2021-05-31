@@ -120,7 +120,7 @@ router.post("/match", async (req, res, next) => {
         // check court of home team
         let match_court = home_team.venue_id
         // add match (home team, away team, ref, court, date, fixture)
-        match_utils.addMatch({
+        await match_utils.addMatch({
             home_team: req.body.home_team_name,
             away_team: req.body.away_team_name,
             league_id: league_id,
@@ -129,7 +129,7 @@ router.post("/match", async (req, res, next) => {
             court: match_court,
             referee_name: req.body.referee_name,
             date: req.body.date,
-            score: ""
+            score: NaN
          })
          res.status(201).send("match has been created");
 

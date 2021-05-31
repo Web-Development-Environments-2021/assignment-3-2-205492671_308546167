@@ -273,21 +273,32 @@ paths:
                 $ref: '#/components/schemas/inline_response_200_2'
         "400":
           description: didnt find avilable data on league
-  /league/matches:
-    get:
-      tags:
-      - league
-      summary: get league season matches
-      description: returns a json object with array of all current season matches
-      responses:
-        "200":
-          description: returns a json object with array of all current season matches
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_3'
-        "400":
-          description: didnt find avilable data on league
+  /league/matches/{league_id}:
+      get:
+        tags:
+        - league
+        summary: get league season matches
+        description: returns a json object with array of all current season matches
+        parameters:
+          - name: league_id
+            in: path
+            required: true
+            style: simple
+            explode: false
+            schema:
+              type: string
+        responses:
+          "200":
+            description: returns a json object with array of all current season matches
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/inline_response_200_3'
+          "400":
+            description: didnt find avilable data on league
+          "404":
+            description: couldn't find matches in the given league_id
+
   /user/union_representative/match:
     post:
       tags:
@@ -484,7 +495,11 @@ components:
           type: string
           description: The court's id
           example: "1121"
-        referee_team:
+        season:
+          type: string
+          description: The season
+          example: "2020/2021"
+        referee_name:
           type: string
           description: The referee's name
           example: Ron

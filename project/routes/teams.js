@@ -2,15 +2,25 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
+const team_utils = require("./utils/team_utils");
+const match_utils = require("./utils/match_utils");
 
-router.get("/teamFullDetails/:teamId", async (req, res, next) => {
-  let team_details = [];
+router.get("/page/:team_id", async (req, res, next) => {
   try {
-    const team_details = await players_utils.getPlayersByTeam(
-      req.params.teamId
+    let players_detail = await players_utils.getPlayersByTeam(
+      req.params.team_id
     );
-    //we should keep implementing team page.....
-    res.send(team_details);
+    if(players_detail.length == 0)
+      res.status(404).send("team_id not found");
+    let team_name = players_detail[0].team_name;
+    let season = '2020/2021'; //todo change
+    let team_matches = team_utils.teamSeasonMatches(team_name,season);
+    let prePostlists = match_utils.prePostMatches(team_matches);
+    let results = { team_id: req.params.team_id,
+                    team_players: players_detail,
+                    pre_play_matches: prePostlists.pre_played_match,
+                    post_play_matches: prePostlists.post_played_match}
+    res.status(200).send(results);
   } catch (error) {
     next(error);
   }
