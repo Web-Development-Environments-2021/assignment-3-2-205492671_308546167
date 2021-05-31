@@ -28,13 +28,15 @@ async function getPlayersInfo(players_ids_list) {
       })
     )
   );
-  let players_info = await Promise.all(promises);
+  let players_info_not_clean = await Promise.all(promises);
+  let players_info = [];
+  players_info_not_clean.map(player => players_info.push(player.data.data))
   return extractRelevantPlayerData(players_info);
 }
 
 function extractRelevantPlayerData(players_info) {
   return players_info.map((player_info) => {
-    const { player_id,  fullname, image_path, position_id} = player_info.data.data;
+    const { player_id,  fullname, image_path, position_id} = player_info;
     let team_name = "None";
     if (player_info.team){
       team_name = player_info.team.data.name;
@@ -53,7 +55,7 @@ function extractFullPlayerData(player_info){
   const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight} = player_info.data.data;
     let team_name = "None";
     if (player_info.team){
-      team_name = player_info.team.data.name;
+      team_name = player_info.data.data.team.data.name;
     }
     return {
       player_id: player_id,
@@ -82,7 +84,7 @@ async function getPlayersByName(player_name) {
       api_token: process.env.api_token,
     },
   });
-  return extractRelevantPlayerData(players);
+  return extractRelevantPlayerData(players.data.data);
 }
 
 

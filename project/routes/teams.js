@@ -4,9 +4,11 @@ const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/team_utils");
 const match_utils = require("./utils/match_utils");
 
+
 router.get("/page/:team_id", async (req, res, next) => {
   try {
     let players_detail = await players_utils.getPlayersByTeam(req.params.team_id);
+    // let players_detail = AGF_players;
     if(players_detail.length == 0)
       res.status(404).send("team_id not found");
     let team_name = players_detail[0].team_name;
@@ -15,7 +17,7 @@ router.get("/page/:team_id", async (req, res, next) => {
     let prePostlists = match_utils.prePostMatches(team_matches);
     let results = { team_id: req.params.team_id,
                     team_players: players_detail,
-                    pre_play_matches: prePostlists.pre_played_match,
+                    pre_play_matches: prePostlists.pre_played_matches,
                     post_play_matches: prePostlists.post_played_match}
     res.status(200).send(results);
   } catch (error) {
