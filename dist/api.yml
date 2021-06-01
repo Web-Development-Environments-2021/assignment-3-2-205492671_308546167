@@ -30,6 +30,7 @@ paths:
           description: invalid input
         "409":
           description: User is already exists
+
   /auth/login:
     post:
       tags:
@@ -54,6 +55,20 @@ paths:
           description: invalid input
         "404":
           description: couldnt find user name matching that password
+
+  /auth/logout:
+    post:
+      tags:
+      - auth
+      summary: logout from server
+      description: deltes user cookies and authntication
+      responses:
+        "200":
+          description: |
+            User was loggedout successfully. The session ID is rested in a cookie named `session`.
+        "400":
+          description: no user is logged in
+            
   /user/favorites/matches:
     get:
       tags:
