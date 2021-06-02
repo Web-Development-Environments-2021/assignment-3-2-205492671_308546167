@@ -5,6 +5,11 @@ const LEAGUE_ID = 271;
 const LEAGUE_NAME = "SUPER LEAGUE";
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const CURRENT_SEASON = "2020/2021";
+const CURRENT_TEAMS = [
+  390,  939,  211, 2356,
+ 2650, 1020,  293, 2394,
+ 1789,   85, 2905, 7466
+];
 
 async function getLeagueDetails() {
   let current_fixture = await match_utils.getCurrentFixture(LEAGUE_ID);
@@ -19,6 +24,10 @@ async function getLeagueDetails() {
 
 async function getLeagueId() {
   return LEAGUE_ID;
+}
+
+async function getLeagueTeams(league_id){
+  return CURRENT_TEAMS;
 }
 
 async function assignRefereeToLeague(ref_user_id, league_id) {
@@ -56,3 +65,4 @@ exports.getLeagueId= getLeagueId;
 exports.assignRefereeToLeague = assignRefereeToLeague;
 exports.getleaguesOfTeam = getleaguesOfTeam;
 exports.getLeagueMatches = getLeagueMatches;
+exports.getLeagueTeams = getLeagueTeams;

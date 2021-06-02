@@ -1,5 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
+const league_utils = require("./league_utils");
 // const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
@@ -37,35 +38,36 @@ async function getPlayersInfo(players_ids_list) {
     let players_info_not_clean = await Promise.all(promises);
     let players_info = [];
     players_info_not_clean.map(player => players_info.push(player.data.data))
-    return extractRelevantPlayerData(players_info);
+    return await extractRelevantPlayerData(players_info);
   }
   catch(error){
     throw({status: 400, message: "server has encorred a problem"});
   }
 }
 
-function extractRelevantPlayerData(players_info) {
-  return players_info.map((player_info) => {
+async function extractRelevantPlayerData(players_info) {
+  const filterd = await filterByLeague(players_info);
+  return filterd.map((player_info) => {
     const { player_id,  fullname, image_path, position_id} = player_info;
     let team_name = "None";
     if (player_info.team){
       team_name = player_info.team.data.name;
     }
-    return {
-      player_id: player_id,
-      fullname: fullname,
-      picture: image_path,
-      position_num: position_id,
-      team_name: team_name,
-    };
+  return {
+    player_id: player_id,
+    fullname: fullname,
+    picture: image_path,
+    position_num: position_id,
+    team_name: team_name,
+  };
   });
 }
 
 function extractFullPlayerData(player_info){
-  const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight} = player_info.data.data;
+  const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight} = player_info;
     let team_name = "None";
     if (player_info.team){
-      team_name = player_info.data.data.team.data.name;
+      team_name = player_info.team.data.name;
     }
     return {
       player_id: player_id,
@@ -90,11 +92,11 @@ async function getPlayersByTeam(team_id) {
 async function getPlayersByName(player_name) {
   const players = await axios.get(`${api_domain}/players/search/${player_name}`, {
     params: {
-      include: "team",
+      include: "team, stats",
       api_token: process.env.api_token,
     },
   });
-  return extractRelevantPlayerData(players.data.data);
+  return await extractRelevantPlayerData(players.data.data);
 }
 
 
@@ -106,13 +108,26 @@ async function getPlayerFullInfo(players_id) {
         include: "team",
       },
     });
-    return extractFullPlayerData(player_info);
+    let filter = [];
+    filter.push(player_info.data.data);
+    filtered = await filterByLeague(filter);
+    if (filter.length == 0){
+      throw({status: 404, message: "player id not found"});
+    }
+    return extractFullPlayerData(filtered[0]);
   }
   catch(error){
     throw({status: 404, message: "player id not found"});
   }
 }
 
+async function filterByLeague(players_info){
+  const league_id = await league_utils.getLeagueId();
+  const team_in_league = await league_utils.getLeagueTeams(league_id);
+  const filterd = players_info.filter(p => team_in_league.includes(p.team_id));
+  return filterd;
+}
+ 
 
 
 exports.getPlayersByTeam = getPlayersByTeam;
