@@ -22,9 +22,14 @@ async function getLeagueId() {
 }
 
 async function assignRefereeToLeague(ref_user_id, league_id) {
-  await DButils.execQuery(
-    `INSERT INTO league_referees VALUES('${ref_user_id}','${league_id}')`
-  );
+  try{
+    await DButils.execQuery(
+      `INSERT INTO league_referees VALUES('${ref_user_id}','${league_id}')`
+    );
+  }
+  catch (error){
+    throw ({status: 400, message: "referee already in the league"})
+  }
 }
 
 async function getleaguesOfTeam(team_id){

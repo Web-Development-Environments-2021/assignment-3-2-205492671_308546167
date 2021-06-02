@@ -49,13 +49,12 @@ router.put("/assign_referee_league", async (req, res, next)=>{
     try{
         const ref_user_id = await users_utils.getUserIdByUsername(req.body.username);
         if(ref_user_id == "not found"){
-            res.status(404).send("Username was not found");
-            return;
+            throw ({ status: 404, message: "Username was not found"});
         }
         //check if the user to assign referree is already referee
         const is_referee = await users_utils.isRole(ref_user_id,'referee');
         if(!is_referee){
-            res.status(401).send("To assign referee to a league, The should be already a referee");
+            throw ({ status: 401, message: "To assign referee to a league, The should be already a referee"});
         }
         else{
             await league_utils.assignRefereeToLeague(ref_user_id,'271')

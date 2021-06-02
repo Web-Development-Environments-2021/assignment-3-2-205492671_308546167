@@ -4,34 +4,44 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
-  const team = await axios.get(`${api_domain}/teams/${team_id}`, {
-    params: {
-      include: "squad",
-      api_token: process.env.api_token,
-    },
-  });
-  team.data.data.squad.data.map((player) =>
-    player_ids_list.push(player.player_id)
-  );
-  return player_ids_list;
+  try{
+    const team = await axios.get(`${api_domain}/teams/${team_id}`, {
+      params: {
+        include: "squad",
+        api_token: process.env.api_token,
+      },
+    });
+    team.data.data.squad.data.map((player) =>
+      player_ids_list.push(player.player_id)
+    );
+    return player_ids_list;
+  }
+  catch(error){
+    throw({status: 404, message: "team id not found"});
+  }
 }
 
 async function getPlayersInfo(players_ids_list) {
-  let promises = [];
-  players_ids_list.map((id) =>
-    promises.push(
-      axios.get(`${api_domain}/players/${id}`, {
-        params: {
-          api_token: process.env.api_token,
-          include: "team",
-        },
-      })
-    )
-  );
-  let players_info_not_clean = await Promise.all(promises);
-  let players_info = [];
-  players_info_not_clean.map(player => players_info.push(player.data.data))
-  return extractRelevantPlayerData(players_info);
+  try{
+    let promises = [];
+    players_ids_list.map((id) =>
+      promises.push(
+        axios.get(`${api_domain}/players/${id}`, {
+          params: {
+            api_token: process.env.api_token,
+            include: "team",
+          },
+        })
+      )
+    );
+    let players_info_not_clean = await Promise.all(promises);
+    let players_info = [];
+    players_info_not_clean.map(player => players_info.push(player.data.data))
+    return extractRelevantPlayerData(players_info);
+  }
+  catch(error){
+    throw({status: 400, message: "server has encorred a problem"});
+  }
 }
 
 function extractRelevantPlayerData(players_info) {
@@ -89,13 +99,18 @@ async function getPlayersByName(player_name) {
 
 
 async function getPlayerFullInfo(players_id) {
-  player_info = await axios.get(`${api_domain}/players/${players_id}`, {
-    params: {
-      api_token: process.env.api_token,
-      include: "team",
-    },
-  });
-  return extractFullPlayerData(player_info);
+  try{
+    player_info = await axios.get(`${api_domain}/players/${players_id}`, {
+      params: {
+        api_token: process.env.api_token,
+        include: "team",
+      },
+    });
+    return extractFullPlayerData(player_info);
+  }
+  catch(error){
+    throw({status: 404, message: "player id not found"});
+  }
 }
 
 

@@ -21,7 +21,7 @@ async function markMatchAsFavorite(user_id, match_id) {
   );
   }
   catch(error){
-    throw({status: 412, massage: "match is already a favorite"})
+    throw({status: 412, message: "match is already a favorite"})
   }
 }
 

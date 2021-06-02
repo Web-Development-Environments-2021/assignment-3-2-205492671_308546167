@@ -4,7 +4,6 @@ const DButils = require("./utils/DButils");
 const users_utils = require("./utils/users_utils");
 const players_utils = require("./utils/players_utils");
 const union_rep = require("./union_representative");
-router.use("/union_representative", union_rep);
 
 
 
@@ -25,6 +24,8 @@ router.use(async function (req, res, next) {
     res.sendStatus(401);
   }
 });
+
+router.use("/union_representative", union_rep);
 
 /**
  * This path gets body with playerId and save this player in the favorites list of the logged-in user
