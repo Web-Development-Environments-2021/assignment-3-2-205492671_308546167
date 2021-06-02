@@ -90,7 +90,7 @@ paths:
       tags:
       - user
       summary: update user's favorive matches
-      description: sends user name and match id to append match to user's favorite matches list
+      description: sends match id to append match to user's favorite matches list
       requestBody:
         content:
           application/json:
@@ -671,16 +671,10 @@ components:
     body_1:
       type: object
       properties:
-        username:
-          maxLength: 8
-          minLength: 3
-          type: string
-          description: Must have 3-8 characters, letters only
-          example: KingMessi
         match_id:
           type: string
           description: must be unique match identitfier
-          example: RX23231F
+          example: 1
     body_2:
       type: object
       properties:

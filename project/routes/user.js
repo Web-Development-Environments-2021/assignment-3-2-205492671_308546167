@@ -61,7 +61,7 @@ router.get("/favorites/players", async (req, res, next) => {
 /**
  * This path gets body with playerId and save this player in the favorites list of the logged-in user
  */
- router.post("/favorites/matches", async (req, res, next) => {
+ router.put("/favorites/matches", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     const match_id = req.body.match_id;
@@ -78,12 +78,8 @@ router.get("/favorites/players", async (req, res, next) => {
 router.get("/favorites/matches", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let favorite_players = {};
-    const player_ids = await users_utils.getFavoritePlayers(user_id);
-    let player_ids_array = [];
-    player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
-    const results = await players_utils.getPlayersInfo(player_ids_array);
-    res.status(200).send(results);
+    const match_ids = await users_utils.getFavoriteMatches(user_id);
+    res.status(200).send(match_ids);
   } catch (error) {
     next(error);
   }

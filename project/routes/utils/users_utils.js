@@ -15,16 +15,27 @@ async function getFavoritePlayers(user_id) {
 }
 
 async function markMatchAsFavorite(user_id, match_id) {
-  await DButils.execQuery(
-    `insert into favorite_matches values ('${user_id}',${match_id})`
+  try{
+    await DButils.execQuery(
+      `insert into favorite_matches values ('${user_id}',${match_id})`
   );
+  }
+  catch(error){
+    throw({status: 412, massage: "match is already a favorite"})
+  }
 }
 
 async function getFavoriteMatches(user_id) {
   const match_ids = await DButils.execQuery(
     `select match_id from favorite_matches where user_id='${user_id}'`
   );
-  return match_ids;
+  let match_ids_clean = [];
+  match_ids.map(ele => match_ids_clean.push(ele.match_id));
+  let sql_list_syn = '(' + match_ids_clean.join(',') + ')';
+  const matches = await DButils.execQuery(
+    `select * from match where match_id in ${sql_list_syn}`
+  );
+  return matches;
 }
 
 
@@ -78,6 +89,8 @@ async function isRole(user_id, role_name) {
 
 exports.markPlayerAsFavorite = markPlayerAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
+exports.markMatchAsFavorite = markMatchAsFavorite;
+exports.getFavoriteMatches = getFavoriteMatches;
 exports.getUserRoles = getUserRoles;
 exports.assignRole = assignRole;
 exports.getUserIdByUsername = getUserIdByUsername;
