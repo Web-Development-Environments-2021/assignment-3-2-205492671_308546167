@@ -21,9 +21,9 @@ async function getMatchEvents(match_ids){
 function getEventsByMatchId(match_id, events){
   let eventlog = events.find(function(eve){
      if(eve[0]){
-       return eve[0].match_id == match_id
+       return eve[0].match_id == match_id;
       }
-      else return false
+      else return [];
     });
   return eventlog;
 }
@@ -49,9 +49,12 @@ async function extractRelevantData(matches){
 }
 
 async function getCurrentFixture(league_id){
-  const current_matches = await DButils.execQuery(
+  let current_matches = await DButils.execQuery(
       `SELECT * FROM match WHERE fixture = ( SELECT MAX(fixture) AS CF FROM match WHERE league = '${league_id}' AND score IS NOT NULL) ORDER BY date DESC`)
-
+      if(current_matches.length == 0){
+        current_matches = await DButils.execQuery(
+          `SELECT * FROM match WHERE league = '${league_id}' AND fixture = 1  ORDER BY date DESC`)
+      }
   return current_matches;
 }
 
