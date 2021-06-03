@@ -8,8 +8,31 @@ async function addMatch(match){
       );    
 }
 
-function extractRelevantData(matches){
+async function getMatchEvents(match_ids){
+  let promises = []
+  match_ids.map(match =>  promises.push(DButils.execQuery(
+    `SELECT * FROM events WHERE match_id = '${match}'`
+  )));
+  let events = await Promise.all(promises); 
+  
+  return events;
+}
+
+function getEventsByMatchId(match_id, events){
+  let eventlog = events.find(function(eve){
+     if(eve[0]){
+       return eve[0].match_id == match_id
+      }
+      else return false
+    });
+  return eventlog;
+}
+
+async function extractRelevantData(matches){
   let results = [];
+  let match_ids = [];
+  matches.map(match=>match_ids.push(match.match_id));
+  let events = await getMatchEvents(match_ids);
   matches.map(match=>results.push({
     
     "match_id": match.match_id,
@@ -19,7 +42,7 @@ function extractRelevantData(matches){
     "season": match.season,
     "referee_name": match.referee_name,
     "date": match.date,
-    "eventlog": [],
+    "eventlog": getEventsByMatchId(match.match_id, events),
     "score": match.score
   }))
   return results;
@@ -32,8 +55,8 @@ async function getCurrentFixture(league_id){
   return current_matches;
 }
 
-function prePostMatches(all_matches){
-  let matches = extractRelevantData(all_matches);
+async function prePostMatches(all_matches){
+  let matches = await extractRelevantData(all_matches);
   let post_played = [];
   let pre_played = [];
 

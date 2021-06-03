@@ -14,7 +14,7 @@ router.get("/page/:team_id", async (req, res, next) => {
     let team_name = players_detail[0].team_name;
     let season = '2020/2021'; //todo change
     let team_matches = await team_utils.teamSeasonMatches(team_name,season);
-    let prePostlists = match_utils.prePostMatches(team_matches);
+    let prePostlists = await match_utils.prePostMatches(team_matches);
     let results = { team_id: req.params.team_id,
                     team_players: players_detail,
                     pre_play_matches: prePostlists.pre_played_matches,

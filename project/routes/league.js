@@ -17,10 +17,9 @@ router.get("/matches/:league_id", async (req, res, next) => {
   try{
     const matches = await league_utils.getLeagueMatches(req.params.league_id);
     if(matches.length==0){
-      res.status(400).send("didnt find avilable data on league");
-      return;
+      throw({ status: 400, message: "didnt find avilable data on league" });
     }
-    let results = match_utils.extractRelevantData(matches);
+    let results = await match_utils.extractRelevantData(matches);
     res.status(200).send(results);
   
   }
@@ -35,10 +34,9 @@ router.get("/current_fixture", async (req, res, next) => {
   try{
     const current_fixture = await match_utils.getCurrentFixture(await league_utils.getLeagueId());
     if(current_fixture.length==0){
-      res.status(400).send("didnt find avilable data on league");
-      return;
+      throw ({status:400, message:"didnt find avilable data on league" });
     }
-    results = match_utils.prePostMatches(current_fixture);
+    results = await match_utils.prePostMatches(current_fixture);
     res.status(200).send(results);
   
   }
