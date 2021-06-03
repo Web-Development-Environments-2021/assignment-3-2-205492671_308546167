@@ -32,6 +32,8 @@ async function getFavoriteMatches(user_id) {
   let match_ids_clean = [];
   match_ids.map(ele => match_ids_clean.push(ele.match_id));
   let sql_list_syn = '(' + match_ids_clean.join(',') + ')';
+  if(match_ids_clean.length == 0)
+    return [];
   const matches = await DButils.execQuery(
     `select * from match where match_id in ${sql_list_syn}`
   );

@@ -1,5 +1,8 @@
-CREATE TABLE [dbo].[league_matches](
+CREATE TABLE [dbo].[favorite_matches](
 	user_id [int] NOT NULL,
-	match_id [varchar](300) NOT NULL,
-	PRIMARY KEY(user_id, match_id)
+	match_id [int] NOT NULL,
+	PRIMARY KEY(user_id, match_id),
+	CONSTRAINT FK_favorite_match_id FOREIGN KEY (match_id)
+	REFERENCES  match(match_id)
+
 )
