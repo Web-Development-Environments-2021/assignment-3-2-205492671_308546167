@@ -736,7 +736,7 @@ components:
           type: string
           description: The date of the match
           format: date-time
-          example: 2021-09-04T21:52:00
+          example: '2021-09-04T21:52:00'
         referee_name:
           type: string
           description: The referee name

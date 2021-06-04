@@ -6,6 +6,7 @@ const DButils = require("./DButils");
 
 
 async function getTeamsByName(team_name) {
+  try{
     const teams = await axios.get(`${api_domain}/teams/search/${team_name}`, {
       params: {
         api_token: process.env.api_token,
@@ -13,6 +14,10 @@ async function getTeamsByName(team_name) {
     });
     return teams.data.data;
   }
+  catch(error){
+    throw({status: 404, message: "one of the teams was not found"});
+  }
+}
   
 function extractRelevantTeamData(teams) {
     return teams.map((team_info) => {
