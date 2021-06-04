@@ -80,8 +80,50 @@ async function prePostMatches(all_matches){
   return results;
 }
 
+async function updateScore(match_id, score){
+  try{
+    await getMatchById(match_id);
+    await DButils.execQuery(
+      `UPDATE match 
+      SET score = '${score}'
+      WHERE match_id = '${match_id}';`
+    );
+  }
+  catch(error){
+    throw({status: 404, message: "match_id was not found"});
+  }
+
+}
+
+async function addEvent(match_id, event){
+  try{
+    await getMatchById(match_id);
+    await DButils.execQuery(
+      `INSERT INTO events VALUES('${match_id}','${event.date}', '${event.min_in_game}', '${event.event_type}', '${event.description}');` 
+    );
+  }
+  catch(error){
+    throw({status: 404, message: "match_id was not found"});
+  }
+
+}
+
+async function getMatchById(match_id){
+  let match = await DButils.execQuery(
+    `SELECT * FROM match WHERE match_id = '${match_id}'`
+  )
+  if(match.length == 0){
+    throw({status: 404, message: "match_id was not found"});
+  }
+  return match;
+}
+
+
+
 
 exports.extractRelevantData = extractRelevantData;
 exports.addMatch = addMatch;
 exports.getCurrentFixture = getCurrentFixture;
 exports.prePostMatches = prePostMatches;
+exports.updateScore = updateScore;
+exports.addEvent = addEvent;

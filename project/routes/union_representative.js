@@ -68,6 +68,27 @@ router.put("/assign_referee_league", async (req, res, next)=>{
 
 });
 
+
+router.put("/add_score", async(req, res, next)=>{
+    try{
+        await match_utils.updateScore(req.body.match_id, req.body.score);
+        res.status(200).send("The score was assigned successfuly")
+    }
+    catch(error) {
+        next(error);
+    }
+});
+
+router.put("/add_event", async(req, res, next)=>{
+    try{
+        await match_utils.addEvent(req.body.match_id, req.body.event);
+        res.status(200).send("The event was assigned successfuly")
+    }
+    catch(error) {
+        next(error);
+    }
+});
+
 router.post("/match", async (req, res, next) => {
     try{
         // make sure both teams are in superleague

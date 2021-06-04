@@ -178,6 +178,7 @@ paths:
     put:
       tags:
       - user
+      - union_representative
       summary: assign referee role to an existing user
       description: union repesentative can assign referee role to an existing user
       requestBody:
@@ -193,6 +194,48 @@ paths:
           description: Authentication failed
         "404":
           description: Username was not found
+
+  /user/union_representative/add_score:
+    put:
+      tags:
+      - user
+      - union_representative
+      summary: add score to an existing match
+      description: union repesentative can add score to a match 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_7'
+        required: true
+      responses:
+        "200":
+          description: The score was assigned successfuly
+        "401":
+          description: Authentication failed
+        "404":
+          description: match_id was not found
+
+  /user/union_representative/add_event:
+    put:
+      tags:
+      - user
+      - union_representative
+      summary: add event to an existing match
+      description: union repesentative can add event to a match's log event 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/body_8'
+        required: true
+      responses:
+        "200":
+          description: The event was added successfuly
+        "401":
+          description: Authentication failed
+        "404":
+          description: match_id was not found
   /league/summary:
     get:
       tags:
@@ -463,7 +506,7 @@ components:
     event:
       required:
       - date
-      - details
+      - description
       - event_type
       - min_in_game
       type: object
@@ -480,7 +523,7 @@ components:
           type: string
           description: The type of the event
           example: yellow card
-        details:
+        description:
           type: string
           description: The description of the event
           example: Messi foueled Ronaldo and got a yellow card
@@ -778,3 +821,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/partial_team'
+    
+    body_7:
+      type: object
+      properties:
+        match_id:
+          type: int
+          description: The match id
+          example: 1
+        score:
+          type: string
+          description: The score of the match to be added
+          example: 3-0
+
+    body_8:
+      type: object
+      properties:
+        match_id:
+          type: int
+          description: The match id
+          example: 1
+        event:
+          $ref: '#/components/schemas/event'
+
+    
