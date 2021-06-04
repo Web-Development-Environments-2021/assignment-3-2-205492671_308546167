@@ -14,7 +14,7 @@ router.post("/register", async (req, res, next) => {
     );
 
     if (users.find((x) => x.username === req.body.username))
-      throw { status: 409, message: "Username taken" };
+      throw { status: 409, message: "Username is already taken" };
 
     //hash the password
     let hash_password = bcrypt.hashSync(
@@ -29,7 +29,7 @@ router.post("/register", async (req, res, next) => {
        ('${req.body.username}', '${req.body.firstname}', '${req.body.lastname}', '${req.body.country}',
         '${hash_password}', '${req.body.email}', '${req.body.profile_picture}')`
     );
-    res.status(201).send("user created");
+    res.status(201).send("User has been created");
   } catch (error) {
     next(error);
   }

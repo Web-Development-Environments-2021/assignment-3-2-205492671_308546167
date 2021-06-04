@@ -13,10 +13,10 @@ async function markMatchAsFavorite(user_id, match_id) {
         throw({status: 412, message: "match is already a favorite"});
       }
       else if (error.class == 16){
-        throw({status: 412, message: "no such match"});
+        throw({status: 404, message: "no such match"});
       }
       else{
-        throw({status: 400, message: "somthing went wrong"});
+        throw({status: 400, message: "something went wrong"});
       }
   }
 }

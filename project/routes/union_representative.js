@@ -10,8 +10,7 @@ router.use(async function(req,res,next){
       const user_id = req.session.user_id;
       const is_union_rep = await users_utils.isRole(user_id,'union_rep');
       if(!is_union_rep){
-        res.status(401).send("Only union representatives allow to assign referee");
-        return;
+        throw ({ status: 403, message: "User isn't permitted"});
       }
       next();
     }
@@ -25,13 +24,12 @@ router.put("/assign_referee", async (req, res, next) => {
     try{
         const ref_user_id = await users_utils.getUserIdByUsername(req.body.username);
         if(ref_user_id == "not found"){
-            res.status(404).send("Username was not found");
-            return;
+            throw ({ status: 404, message: "Username was not found"});
         }
         //check if the user to assign referree is already referee
         const is_referee = await users_utils.isRole(ref_user_id,'referee');
         if(is_referee){
-            res.status(401).send("user is already referee");
+            throw ({ status: 412, message: "user is already referee"});
         }
         else{
             await users_utils.assignRole(ref_user_id,"referee")
@@ -49,16 +47,16 @@ router.put("/assign_referee_league", async (req, res, next)=>{
     try{
         const ref_user_id = await users_utils.getUserIdByUsername(req.body.username);
         if(ref_user_id == "not found"){
-            throw ({ status: 404, message: "Username was not found"});
+            throw ({ status: 404, message: "The referee's username was not found"});
         }
         //check if the user to assign referree is already referee
         const is_referee = await users_utils.isRole(ref_user_id,'referee');
         if(!is_referee){
-            throw ({ status: 401, message: "To assign referee to a league, The should be already a referee"});
+            throw ({ status: 412, message: "To assign referee to a league, The user should be already a referee"});
         }
         else{
             await league_utils.assignRefereeToLeague(ref_user_id,'271')
-            res.status(200).send("The referee was assigned to the league successfully");
+            res.status(200).send("The referee was assigned to the league successfuly");
         }
 
     } 
@@ -82,7 +80,7 @@ router.put("/add_score", async(req, res, next)=>{
 router.put("/add_event", async(req, res, next)=>{
     try{
         await match_utils.addEvent(req.body.match_id, req.body.event);
-        res.status(200).send("The event was assigned successfuly")
+        res.status(200).send("The event was added successfuly")
     }
     catch(error) {
         next(error);
@@ -155,6 +153,24 @@ router.post("/match", async (req, res, next) => {
     }
 
 });
+
+
+router.get("/matches/:league_id", async (req, res, next) => {
+    try{
+      const matches = await league_utils.getLeagueMatches(req.params.league_id);
+      if(matches.length==0){
+        throw({ status: 400, message: "didnt find available data on league" });
+      }
+      let results = await match_utils.extractRelevantData(matches);
+      res.status(200).send(results);
+    
+    }
+    catch(error){
+      next(error)
+  
+    }
+    
+  });
 
 
 module.exports = router;

@@ -104,7 +104,7 @@ async function getPlayersByName(player_name) {
   return await extractRelevantPlayerData(players.data.data);
   }
   catch(error){
-    throw({status: 404, message: "player not found"});
+    throw({status: 404, message: "player_name not found"});
   }
 }
 

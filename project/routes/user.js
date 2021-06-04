@@ -37,7 +37,7 @@ router.use("/union_representative", union_rep);
     const user_id = req.session.user_id;
     const match_id = req.body.match_id;
     await users_utils.markMatchAsFavorite(user_id, match_id);
-    res.status(201).send("The match successfully saved as favorite");
+    res.status(200).send("The match successfully saved as favorite");
   } catch (error) {
     next(error);
   }

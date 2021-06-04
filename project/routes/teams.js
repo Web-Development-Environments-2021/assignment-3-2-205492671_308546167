@@ -8,8 +8,8 @@ const league_utils = require("./utils/league_utils");
 
 router.get("/page/:team_id", async (req, res, next) => {
   try {
-    if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(req.params.team_id)){
-      throw({status: 404, message: "team not found"});
+    if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(parseInt(req.params.team_id))){
+      throw({status: 404, message: "team_id not found"});
     }
     let players_detail = await players_utils.getPlayersByTeam(req.params.team_id);
     // let players_detail = AGF_players;

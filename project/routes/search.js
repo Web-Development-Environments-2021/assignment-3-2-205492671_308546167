@@ -32,7 +32,7 @@ router.get("/team/search", async (req, res, next) => {
         const results = teams_utils.extractRelevantTeamData(await teams_utils.getTeamsByName(req.query.team_name));
 
         if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(results[0].team_id)){
-          throw({status: 404, message: "team not found"});
+          throw({status: 404, message: "team_id not found"});
         }
 
         if (req.query.sorted){
