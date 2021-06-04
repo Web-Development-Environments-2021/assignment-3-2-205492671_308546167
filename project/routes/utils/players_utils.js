@@ -64,7 +64,7 @@ async function extractRelevantPlayerData(players_info) {
 }
 
 function extractFullPlayerData(player_info){
-  const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight} = player_info;
+  const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight, height} = player_info;
     let team_name = "None";
     if (player_info.team){
       team_name = player_info.team.data.name;
@@ -79,7 +79,8 @@ function extractFullPlayerData(player_info){
       nationality: nationality,
       date_of_birth: birthdate,
       country: birthcountry,
-      weight: weight
+      weight: weight,
+      height: height
     };
 }
 
