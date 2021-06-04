@@ -74,8 +74,7 @@ router.post("/match", async (req, res, next) => {
         let ht = await team_utils.getTeamsByName(req.body.home_team_name);
         let at = await team_utils.getTeamsByName(req.body.away_team_name);
         if (ht.length == 0 || at.length == 0){
-            res.status(404).send("one of the params you listed was not found");
-            return;
+            throw({status: 404, message: "one of the teams not found"});
         }
         let home_team = ht[0];
         let away_team = at[0];
@@ -83,26 +82,22 @@ router.post("/match", async (req, res, next) => {
         let away_team_leagues = await league_utils.getleaguesOfTeam(away_team.id);
         let league_id = await league_utils.getLeagueId();
         if (!home_team_leagues.includes(league_id) || !away_team_leagues.includes(league_id)){
-            res.status(404).send("one of the params you listed was not found");
-            return;
+            throw({status: 404, message:"one of the teams not found"});
         }
         // make sure no games are set in this day
         let number_of_home_team_matches = await team_utils.teamMatchesOnDay(req.body.home_team_name, req.body.date);
         let number_of_away_team_matches = await team_utils.teamMatchesOnDay(req.body.away_team_name, req.body.date);
         if (number_of_home_team_matches.length>0 || number_of_away_team_matches.length>0){
-            res.status(404).send("one of the params you listed was not found");
-            return;
+            throw({status:400, message: "invalid match day"});
         }
         // make sure ref is in league
         let ref_id = await users_utils.getUserIdByUsername(req.body.referee_name);
         if (ref_id == "not found"){
-            res.status(404).send("one of the params you listed was not found");
-            return;    
+            throw({status: 404, message: "referee not found"});    
         }
         let ref_league = (await users_utils.getRefLeague(ref_id));
         if (ref_league == 0 || ref_league[0].league_id != league_id){
-            res.status(404).send("one of the params you listed was not found");
-            return;
+            throw({status: 404, message: "referee is not in this league"});
         }
         // check latest fixture of teams and assign it to the new match
         let home_fixture = -1;
@@ -112,8 +107,8 @@ router.post("/match", async (req, res, next) => {
             home_fixture = latest_match_home[0];
         }
         let latest_match_away = await team_utils.getTeamLatestMatch(req.body.away_team_name);
-        if (latest_match_home.length != 0){
-            home_fixture = latest_match_home[0];
+        if (latest_match_away.length != 0){
+            away_fixture = latest_match_away[0];
         }
         let fixture = Math.max(latest_match_away[0].LF, latest_match_home[0].LF)+1;
         // check court of home team
