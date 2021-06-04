@@ -90,13 +90,21 @@ async function getPlayersByTeam(team_id) {
 }
 
 async function getPlayersByName(player_name) {
+  try{
   const players = await axios.get(`${api_domain}/players/search/${player_name}`, {
     params: {
       include: "team, stats",
       api_token: process.env.api_token,
     },
   });
+  if (players.data.data.length == 0){
+    throw(error);
+  }
   return await extractRelevantPlayerData(players.data.data);
+  }
+  catch(error){
+    throw({status: 404, message: "player not found"});
+  }
 }
 
 

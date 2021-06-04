@@ -3,10 +3,14 @@ var router = express.Router();
 const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/team_utils");
 const match_utils = require("./utils/match_utils");
+const league_utils = require("./utils/league_utils");
 
 
 router.get("/page/:team_id", async (req, res, next) => {
   try {
+    if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(req.params.team_id)){
+      throw({status: 404, message: "team not found"});
+    }
     let players_detail = await players_utils.getPlayersByTeam(req.params.team_id);
     // let players_detail = AGF_players;
     if(players_detail.length == 0)

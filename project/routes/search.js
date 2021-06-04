@@ -3,6 +3,7 @@ var router = express.Router();
 const players_utils = require("./utils/players_utils");
 const teams_utils = require("./utils/team_utils");
 const search_utils = require("./utils/search_utils");
+const league_utils = require("./utils/league_utils");
      
 
 router.get("/player/search", async (req, res, next) => {
@@ -29,7 +30,11 @@ router.get("/player/search", async (req, res, next) => {
 router.get("/team/search", async (req, res, next) => {
     try {
         const results = teams_utils.extractRelevantTeamData(await teams_utils.getTeamsByName(req.query.team_name));
-        console.log(results)
+
+        if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(results[0].team_id)){
+          throw({status: 404, message: "team not found"});
+        }
+
         if (req.query.sorted){
             search_utils.sortArray(results, function(a,b){
                 return a.fullname - b.fullname;
