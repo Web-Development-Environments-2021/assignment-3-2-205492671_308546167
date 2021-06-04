@@ -1,18 +1,6 @@
 const DButils = require("./DButils");
 const users_utils = require("./users_utils");
 
-async function markPlayerAsFavorite(user_id, player_id) {
-  await DButils.execQuery(
-    `insert into FavoritePlayers values ('${user_id}',${player_id})`
-  );
-}
-
-async function getFavoritePlayers(user_id) {
-  const player_ids = await DButils.execQuery(
-    `select player_id from FavoritePlayers where user_id='${user_id}'`
-  );
-  return player_ids;
-}
 
 async function markMatchAsFavorite(user_id, match_id) {
   try{
@@ -21,7 +9,15 @@ async function markMatchAsFavorite(user_id, match_id) {
   );
   }
   catch(error){
-    throw({status: 412, message: "match is already a favorite"})
+      if (error.class == 14){
+        throw({status: 412, message: "match is already a favorite"});
+      }
+      else if (error.class == 16){
+        throw({status: 412, message: "no such match"});
+      }
+      else{
+        throw({status: 400, message: "somthing went wrong"});
+      }
   }
 }
 
@@ -89,8 +85,6 @@ async function isRole(user_id, role_name) {
   return is_referee;
 }
 
-exports.markPlayerAsFavorite = markPlayerAsFavorite;
-exports.getFavoritePlayers = getFavoritePlayers;
 exports.markMatchAsFavorite = markMatchAsFavorite;
 exports.getFavoriteMatches = getFavoriteMatches;
 exports.getUserRoles = getUserRoles;

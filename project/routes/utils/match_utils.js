@@ -23,8 +23,11 @@ function getEventsByMatchId(match_id, events){
      if(eve[0]){
        return eve[0].match_id == match_id;
       }
-      else return [];
+      else return false;
     });
+  if (eventlog === undefined){
+    return[];
+  }
   return eventlog;
 }
 
