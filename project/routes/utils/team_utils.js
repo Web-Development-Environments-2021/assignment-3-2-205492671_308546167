@@ -44,14 +44,6 @@ async function teamSeasonMatches(team_name, season){
   return matches;
 } 
 
-async function getTeamLatestMatch(team_name){
-  
-  const latestMatches = await DButils.execQuery(
-    `select MAX(fixture) AS LF from match where home_team = '${team_name}' OR away_team = '${team_name}'`
-  );
-  return latestMatches;
-}
-
 async function getTeamsBySeasonId(season_id) {
   try{
   const teams = await axios.get(`${api_domain}/teams/season/${season_id}`, {
@@ -72,6 +64,5 @@ async function getTeamsBySeasonId(season_id) {
 exports.getTeamsByName = getTeamsByName;
 exports.teamMatchesOnDay = teamMatchesOnDay;
 exports.extractRelevantTeamData = extractRelevantTeamData;
-exports.getTeamLatestMatch = getTeamLatestMatch;
 exports.teamSeasonMatches = teamSeasonMatches;
 exports.getTeamsBySeasonId = getTeamsBySeasonId;
