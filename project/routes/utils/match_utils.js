@@ -1,10 +1,11 @@
 const DButils = require("./DButils");
+const league_utils = require("./league_utils");
 
 async function addMatch(match){
     await DButils.execQuery(
-        `INSERT INTO match (home_team, away_team, league, season, fixture, court, referee_name, date, score) VALUES
+        `INSERT INTO match (home_team, away_team, league, season, stage, court, referee_name, date, score) VALUES
          ('${match.home_team}','${match.away_team}','${match.league_id}', '${match.season}',
-        '${match.fixture}', '${match.court}', '${match.referee_name}', '${match.date}', NULL)`
+        '${match.stage}', '${match.court}', '${match.referee_name}', '${match.date}', NULL)`
       );    
 }
 
@@ -53,12 +54,10 @@ async function extractRelevantData(matches){
 
 async function getCurrentFixture(league_id){
   try{
+    const current_stage = await league_utils.getCurrentStage();
     let current_matches = await DButils.execQuery(
-      `SELECT * FROM match WHERE fixture = ( SELECT MAX(fixture) AS CF FROM match WHERE league = '${league_id}' AND score IS NOT NULL) ORDER BY date DESC`)
-      if(current_matches.length == 0){
-        current_matches = await DButils.execQuery(
-          `SELECT * FROM match WHERE league = '${league_id}' AND fixture = 1  ORDER BY date ASC`)
-      }
+      `SELECT * FROM match WHERE stage = '${current_stage}' ORDER BY date ASC`)
+      
     return current_matches;
   }
   catch(error){

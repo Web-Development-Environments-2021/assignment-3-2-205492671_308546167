@@ -118,27 +118,16 @@ router.post("/match", async (req, res, next) => {
         if (ref_league == 0 || ref_league[0].league_id != league_id){
             throw({status: 404, message: "referee is not in this league"});
         }
-        // check latest fixture of teams and assign it to the new match
-        let home_fixture = -1;
-        let away_fixture = -1;
-        let latest_match_home = await team_utils.getTeamLatestMatch(req.body.home_team_name);
-        if (latest_match_home.length != 0){
-            home_fixture = latest_match_home[0];
-        }
-        let latest_match_away = await team_utils.getTeamLatestMatch(req.body.away_team_name);
-        if (latest_match_away.length != 0){
-            away_fixture = latest_match_away[0];
-        }
-        let fixture = Math.max(latest_match_away[0].LF, latest_match_home[0].LF)+1;
+        
         // check court of home team
         let match_court = home_team.venue_id
-        // add match (home team, away team, ref, court, date, fixture)
+        // add match (home team, away team, ref, court, date, stage)
         await match_utils.addMatch({
             home_team: req.body.home_team_name,
             away_team: req.body.away_team_name,
             league_id: league_id,
-            season: league_utils.getSeasonName(),
-            stage: league_utils.getCurrentStage(),
+            season: await league_utils.getSeasonName(),
+            stage: await league_utils.getCurrentStage(),
             court: match_court,
             referee_name: req.body.referee_name,
             date: req.body.date,
