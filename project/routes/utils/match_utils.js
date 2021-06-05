@@ -57,7 +57,7 @@ async function getCurrentFixture(league_id){
       `SELECT * FROM match WHERE fixture = ( SELECT MAX(fixture) AS CF FROM match WHERE league = '${league_id}' AND score IS NOT NULL) ORDER BY date DESC`)
       if(current_matches.length == 0){
         current_matches = await DButils.execQuery(
-          `SELECT * FROM match WHERE league = '${league_id}' AND fixture = 1  ORDER BY date DESC`)
+          `SELECT * FROM match WHERE league = '${league_id}' AND fixture = 1  ORDER BY date ASC`)
       }
     return current_matches;
   }

@@ -312,91 +312,38 @@ paths:
           description: User isn't permitted
         "404":
           description: one of the teams not found or referee not found or referee is not in this league
-  /player/search:
+  
+  /search/player:
     get:
       tags:
       - player
-      summary: search player by name
-      description: returns a json object with a list of players with the given name
-      parameters:
-      - name: player_name
-        in: query
-        description: Player full/partial name
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: James Gomez
-      - name: sorted
-        in: query
-        description: The type of sort (by team name/by player name), if none present then won't sort
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: player name
-      - name: filtered_by
-        in: query
-        description: The type of filter (by position or by team name)
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: position
-      - name: filter
-        in: query
-        description: The value to filter
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: 2
+      summary: search player
+      description: returns a json object with a list of players
       responses:
         "200":
-          description: returns a json object with a list of players with the given name
+          description: returns a json object with a list of players
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_4'
         "404":
-          description: player_name not found
-  /team/search:
+          description: season_id not found
+  /search/team:
     get:
       tags:
       - team
-      summary: search team by name
-      description: returns a json object with a list of teams with the given name
-      parameters:
-      - name: team_name
-        in: query
-        required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          example: AGF
-      - name: sorted
-        in: query
-        description: The type of sort ('True'/'False') if 'Fasle' present then won't sort
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-        example: "True"
+      summary: search team
+      description: returns a json object with a list of teams
       responses:
         "200":
-          description: returns a json object with a list of teams with the given name
+          description: returns a json object with a list of teams
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/inline_response_200_5'
         "404":
-          description: team_name not found
+          description: season_id not found
+
 components:
   schemas:
     user:
@@ -631,12 +578,15 @@ components:
         team_id:
           type: string
           description: The team's id
+          example: 2905
         team_name:
           type: string
           description: The team's name
+          example: AGF
         team_logo:
           type: string
           description: The url of team's logo image
+          example: https://cdn.sportmonks.com/images//soccer/teams/25/2905.png
           format: URL
     body:
       type: object

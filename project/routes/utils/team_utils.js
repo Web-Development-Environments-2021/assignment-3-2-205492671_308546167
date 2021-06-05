@@ -52,8 +52,26 @@ async function getTeamLatestMatch(team_name){
   return latestMatches;
 }
 
+async function getTeamsBySeasonId(season_id) {
+  try{
+  const teams = await axios.get(`${api_domain}/teams/season/${season_id}`, {
+    params: {
+      api_token: process.env.api_token,
+    },
+  });
+  if (teams.data.data.length == 0){
+    throw(error);
+  }
+  return teams.data.data; 
+  }
+  catch(error){
+    throw({status: 404, message: "season_id not found"});
+  }
+}
+
 exports.getTeamsByName = getTeamsByName;
 exports.teamMatchesOnDay = teamMatchesOnDay;
 exports.extractRelevantTeamData = extractRelevantTeamData;
 exports.getTeamLatestMatch = getTeamLatestMatch;
 exports.teamSeasonMatches = teamSeasonMatches;
+exports.getTeamsBySeasonId = getTeamsBySeasonId;

@@ -56,6 +56,38 @@ router.get("/player/page/:player_id", async (req, res, next) => {
     }
 });
 
+
+
+
+
+
+
+router.get("/search/player", async (req, res, next) => {
+  try {
+    const players = await players_utils.getPlayersBySeasonId(await league_utils.getSeasonID());
+    const results = await players_utils.extractRelevantPlayerData(players);
+
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/search/team", async (req, res, next) => {
+  try {
+    const teams = await teams_utils.getTeamsBySeasonId(await league_utils.getSeasonID());
+    const results = await teams_utils.extractRelevantTeamData(teams);
+
+    res.status(200).send(results);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
+
+
 module.exports = router;
 
   

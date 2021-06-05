@@ -136,11 +136,35 @@ async function filterByLeague(players_info){
   const filterd = players_info.filter(p => team_in_league.includes(p.team_id));
   return filterd;
 }
+
+async function getPlayersBySeasonId(season_id) {
+  try{
+  const players = await axios.get(`${api_domain}/teams/season/${season_id}`, {
+    params: {
+      include: "squad.player.team",
+      api_token: process.env.api_token,
+    },
+  });
+  if (players.data.data.length == 0){
+    throw(error);
+  }
+  let player_ids = [];
+  players.data.data.map(t => t.squad.data.map( p => player_ids.push(p.player.data)));
+  return player_ids; 
+  }
+  catch(error){
+    throw({status: 404, message: "season_id not found"});
+  }
+}
+
  
 
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.getPlayersByName = getPlayersByName;
-exports.getPlayerFullInfo = getPlayerFullInfo
+exports.getPlayerFullInfo = getPlayerFullInfo;
+exports.getPlayersBySeasonId = getPlayersBySeasonId;
+exports.extractRelevantPlayerData = extractRelevantPlayerData;
+
 

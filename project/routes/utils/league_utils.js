@@ -4,19 +4,33 @@ const match_utils = require("./match_utils");
 const LEAGUE_ID = 271;
 const LEAGUE_NAME = "SUPER LEAGUE";
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const CURRENT_SEASON = "2020/2021";
+const CURRENT_SEASON = "2021/2022";
 const CURRENT_TEAMS = [
-  390,  939,  211, 2356,
- 2650, 1020,  293, 2394,
- 1789,   85, 2905, 7466
+  85, 86, 293, 390,
+ 939, 1020, 1789, 2356,
+ 2394, 2447, 2905, 7466
 ];
+const CURRENT_STAGES = ['Conference League Play-offs - Final', 'Championship Round', 'Relegation Round', 'Regular Season'];
+const SEASON_ID = 18334;
+
+async function getSeasonID(){
+  return SEASON_ID;
+}
+
+async function getSeasonName(){
+  return CURRENT_SEASON;
+}
+
+async function getCurrentStage(){
+  return CURRENT_STAGES[CURRENT_STAGES.length-1];
+}
 
 async function getLeagueDetails() {
   let current_fixture = await match_utils.getCurrentFixture(LEAGUE_ID);
   return {
     league_name: LEAGUE_NAME,
     season_name: CURRENT_SEASON,
-    stage_name: current_fixture[0].fixture,
+    stage_name: await getCurrentStage(),
     match: current_fixture[0]
     // next game details should come from DB
   };
@@ -66,3 +80,6 @@ exports.assignRefereeToLeague = assignRefereeToLeague;
 exports.getleaguesOfTeam = getleaguesOfTeam;
 exports.getLeagueMatches = getLeagueMatches;
 exports.getLeagueTeams = getLeagueTeams;
+exports.getSeasonID = getSeasonID;
+exports.getSeasonName = getSeasonName;
+exports.getCurrentStage = getCurrentStage;
