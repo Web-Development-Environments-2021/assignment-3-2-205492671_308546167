@@ -48,7 +48,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/role_list'
         "401":
           description: Username or Password incorrect
 
@@ -90,7 +90,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_1'
+              $ref: '#/components/schemas/match_id'
         required: true
       responses:
         "200":
@@ -114,7 +114,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_4'
+              $ref: '#/components/schemas/username'
         required: true
       responses:
         "200":
@@ -137,7 +137,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_7'
+              $ref: '#/components/schemas/score_prop'
         required: true
       responses:
         "200":
@@ -157,7 +157,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_8'
+              $ref: '#/components/schemas/event_prop'
         required: true
       responses:
         "200":
@@ -178,7 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+                $ref: '#/components/schemas/league_params'
         "400":
           description: didnt find available data on league
   /user/union_representative/assign_referee_league:
@@ -191,7 +191,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_5'
+              $ref: '#/components/schemas/username'
         required: true
       responses:
         "200":
@@ -261,7 +261,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+                $ref: '#/components/schemas/pre_post_matches'
         "400":
           description: didnt find avilable data on league
   /user/union_representative/matches/{league_id}:
@@ -284,7 +284,7 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/inline_response_200_3'
+                  $ref: '#/components/schemas/season_matches'
           "400":
             description: didnt find available data on league
           "403":
@@ -301,7 +301,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/body_6'
+              $ref: '#/components/schemas/match_prop'
         required: true
       responses:
         "201":
@@ -325,7 +325,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_4'
+                $ref: '#/components/schemas/league_players'
         "404":
           description: season_id not found
   /search/team:
@@ -340,7 +340,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200_5'
+                $ref: '#/components/schemas/league_teams'
         "404":
           description: season_id not found
 
@@ -617,7 +617,7 @@ components:
           description: Must have 5-10 characters, should contain at least one digit and one special character
           format: password
           example: my*pass21
-    inline_response_200:
+    role_list:
       type: object
       properties:
         roles:
@@ -629,21 +629,21 @@ components:
           - player
           items:
             type: string
-    body_1:
+    match_id:
       type: object
       properties:
         match_id:
           type: string
           description: must be unique match identitfier
           example: 1
-    body_4:
+    username:
       type: object
       properties:
         username:
           type: string
           example: KingMessi
-          description: The username of the user to be assigned as a referee
-    inline_response_200_1:
+          description: The username of the user to be assigned
+    league_params:
       type: object
       properties:
         season_name:
@@ -656,14 +656,7 @@ components:
           example: fixture 14
         match:
           $ref: '#/components/schemas/match'
-    body_5:
-      type: object
-      properties:
-        username:
-          type: string
-          example: KingMessi
-          description: The username of the user to be assigned as a referee
-    inline_response_200_2:
+    pre_post_matches:
       type: object
       properties:
         pre_played_matches:
@@ -676,7 +669,7 @@ components:
           description: post played matches
           items:
             $ref: '#/components/schemas/match'
-    inline_response_200_3:
+    season_matches:
       type: object
       properties:
         season_matches:
@@ -684,7 +677,7 @@ components:
           description: all season matches
           items:
             $ref: '#/components/schemas/match'
-    body_6:
+    match_prop:
       type: object
       properties:
         home_team_name:
@@ -704,24 +697,24 @@ components:
           type: string
           description: The referee name
           example: ref
-    inline_response_200_4:
+    league_players:
       properties:
         search_player:
           type: array
           items:
             $ref: '#/components/schemas/partial_player'
-    inline_response_200_5:
+    league_teams:
       properties:
         search_team:
           type: array
           items:
             $ref: '#/components/schemas/partial_team'
     
-    body_7:
+    score_prop:
       type: object
       properties:
         match_id:
-          type: int
+          type: integer
           description: The match id
           example: 1
         score:
@@ -729,11 +722,11 @@ components:
           description: The score of the match to be added
           example: 3-0
 
-    body_8:
+    event_prop:
       type: object
       properties:
         match_id:
-          type: int
+          type: integer
           description: The match id
           example: 1
         event:
