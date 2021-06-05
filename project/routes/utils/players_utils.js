@@ -1,7 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const league_utils = require("./league_utils");
-// const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
   let player_ids_list = [];
@@ -22,10 +21,10 @@ async function getPlayerIdsByTeam(team_id) {
   }
 }
 
-async function getPlayersInfo(players_ids_list) {
+async function getPlayersInfo(players_ids) {
   try{
     let promises = [];
-    players_ids_list.map((id) =>
+    players_ids.map((id) =>
       promises.push(
         axios.get(`${api_domain}/players/${id}`, {
           params: {
@@ -45,6 +44,11 @@ async function getPlayersInfo(players_ids_list) {
   }
 }
 
+/*
+INPUT: a list of players
+OUTPUT: a list with partial data of each player, 
+        relvant for player search and team search.
+*/
 async function extractRelevantPlayerData(players_info) {
   const filterd = await filterByLeague(players_info);
   return filterd.map((player_info) => {
@@ -63,6 +67,11 @@ async function extractRelevantPlayerData(players_info) {
   });
 }
 
+/*
+INPUT: a single player
+OUTPUT: a list with full data of player, 
+        relevant for player's home page.
+*/
 function extractFullPlayerData(player_info){
   const { player_id,  fullname, image_path, position_id, common_name, nationality, birthdate, birthcountry, weight, height} = player_info;
     let team_name = "None";
@@ -156,9 +165,6 @@ async function getPlayersBySeasonId(season_id) {
     throw({status: 404, message: "season_id not found"});
   }
 }
-
- 
-
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;

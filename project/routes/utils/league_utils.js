@@ -7,10 +7,14 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const CURRENT_SEASON = "2021/2022";
 const CURRENT_TEAMS = [
   85, 86, 293, 390,
- 939, 1020, 1789, 2356,
- 2394, 2447, 2905, 7466
+  939, 1020, 1789, 2356,
+  2394, 2447, 2905, 7466
 ];
-const CURRENT_STAGES = ['Conference League Play-offs - Final', 'Championship Round', 'Relegation Round', 'Regular Season'];
+const CURRENT_STAGES = [
+  'Conference League Play-offs - Final',
+  'Championship Round', 'Relegation Round',
+  'Regular Season'
+];
 const SEASON_ID = 18334;
 
 async function getSeasonID(){
@@ -32,7 +36,6 @@ async function getLeagueDetails() {
     season_name: CURRENT_SEASON,
     stage_name: await getCurrentStage(),
     match: current_fixture[0]
-    // next game details should come from DB
   };
 }
 

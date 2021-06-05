@@ -5,6 +5,7 @@ const match_utils = require("./utils/match_utils");
 const team_utils = require("./utils/team_utils");
 const league_utils = require("./utils/league_utils");
 
+// middleware - verify that the user is union representative
 router.use(async function(req,res,next){
     try{
       const user_id = req.session.user_id;
@@ -17,7 +18,6 @@ router.use(async function(req,res,next){
     catch (error) {
       next(error);
     }
-    
   });
   
 router.put("/assign_referee", async (req, res, next) => {
@@ -35,12 +35,10 @@ router.put("/assign_referee", async (req, res, next) => {
             await users_utils.assignRole(ref_user_id,"referee")
             res.status(200).send("The role was assigned successfuly");
         }
-
     }
     catch (error) {
         next(error);
     }
-
 });
 
 router.put("/assign_referee_league", async (req, res, next)=>{
@@ -55,17 +53,14 @@ router.put("/assign_referee_league", async (req, res, next)=>{
             throw ({ status: 412, message: "To assign referee to a league, The user should be already a referee"});
         }
         else{
-            await league_utils.assignRefereeToLeague(ref_user_id,'271')
+            await league_utils.assignRefereeToLeague(ref_user_id, await league_utils.getLeagueId());
             res.status(200).send("The referee was assigned to the league successfuly");
         }
-
     } 
     catch (error) {
         next(error);
     }
-
 });
-
 
 router.put("/add_score", async(req, res, next)=>{
     try{
@@ -106,7 +101,7 @@ router.post("/match", async (req, res, next) => {
         // make sure no games are set in this day
         let number_of_home_team_matches = await team_utils.teamMatchesOnDay(req.body.home_team_name, req.body.date);
         let number_of_away_team_matches = await team_utils.teamMatchesOnDay(req.body.away_team_name, req.body.date);
-        if (number_of_home_team_matches.length>0 || number_of_away_team_matches.length>0){
+        if (number_of_home_team_matches.length > 0 || number_of_away_team_matches.length > 0){
             throw({status:400, message: "invalid match day"});
         }
         // make sure ref is in league
@@ -134,13 +129,10 @@ router.post("/match", async (req, res, next) => {
             score: NaN
          })
          res.status(201).send("match has been created");
-
-
     }
     catch (error) {
         next(error);
     }
-
 });
 
 
@@ -156,10 +148,7 @@ router.get("/matches/:league_id", async (req, res, next) => {
     }
     catch(error){
       next(error)
-  
     }
-    
   });
-
 
 module.exports = router;

@@ -9,6 +9,42 @@ async function addMatch(match){
       );    
 }
 
+async function addEvent(match_id, event){
+  try{
+    await getMatchById(match_id);
+    await DButils.execQuery(
+      `INSERT INTO events VALUES('${match_id}','${event.date}', '${event.min_in_game}', '${event.event_type}', '${event.description}');` 
+    );
+  }
+  catch(error){
+    throw({status: 404, message: "match_id was not found"});
+  }
+}
+
+/* 
+  INPUT: list of matches
+  OUTPUT: list of matches with only the relevant data of match that we need. 
+*/
+async function extractRelevantData(matches){
+  let results = [];
+  let match_ids = [];
+  matches.map(match=>match_ids.push(match.match_id));
+  let events = await getMatchEvents(match_ids);
+  matches.map(match=>results.push({
+    
+    "match_id": match.match_id,
+    "home_team": match.home_team,
+    "away_team": match.away_team,
+    "court": match.court,
+    "season": match.season,
+    "referee_name": match.referee_name,
+    "date": match.date,
+    "eventlog": getEventsByMatchId(match.match_id, events),
+    "score": match.score
+  }))
+  return results;
+}
+
 async function getMatchEvents(match_ids){
   let promises = []
   match_ids.map(match =>  promises.push(DButils.execQuery(
@@ -32,25 +68,6 @@ function getEventsByMatchId(match_id, events){
   return eventlog;
 }
 
-async function extractRelevantData(matches){
-  let results = [];
-  let match_ids = [];
-  matches.map(match=>match_ids.push(match.match_id));
-  let events = await getMatchEvents(match_ids);
-  matches.map(match=>results.push({
-    
-    "match_id": match.match_id,
-    "home_team": match.home_team,
-    "away_team": match.away_team,
-    "court": match.court,
-    "season": match.season,
-    "referee_name": match.referee_name,
-    "date": match.date,
-    "eventlog": getEventsByMatchId(match.match_id, events),
-    "score": match.score
-  }))
-  return results;
-}
 
 async function getCurrentFixture(league_id){
   try{
@@ -63,27 +80,8 @@ async function getCurrentFixture(league_id){
   catch(error){
     throw({status: 400, message: "didnt find available data on league"});
   }
-  
 }
 
-async function prePostMatches(all_matches){
-  let matches = await extractRelevantData(all_matches);
-  let post_played = [];
-  let pre_played = [];
-
-  matches.map(function(match) {
-    if(match.score !=  null){
-      post_played.push(match);
-    }
-    else{
-      pre_played.push(match);
-    }
-
-  });
-  const results = {  pre_played_matches: pre_played, post_played_match: post_played};
-
-  return results;
-}
 
 async function updateScore(match_id, score){
   try{
@@ -97,20 +95,6 @@ async function updateScore(match_id, score){
   catch(error){
     throw({status: 404, message: "match_id was not found"});
   }
-
-}
-
-async function addEvent(match_id, event){
-  try{
-    await getMatchById(match_id);
-    await DButils.execQuery(
-      `INSERT INTO events VALUES('${match_id}','${event.date}', '${event.min_in_game}', '${event.event_type}', '${event.description}');` 
-    );
-  }
-  catch(error){
-    throw({status: 404, message: "match_id was not found"});
-  }
-
 }
 
 async function getMatchById(match_id){
@@ -123,8 +107,27 @@ async function getMatchById(match_id){
   return match;
 }
 
+/*
+INPUT: all matches details
+OUTPUT: json file with two lists: pre played matches and post played matches
+*/
+async function prePostMatches(all_matches){
+  let matches = await extractRelevantData(all_matches);
+  let post_played = [];
+  let pre_played = [];
 
+  matches.map(function(match) {
+    if(match.score !=  null){
+      post_played.push(match);
+    }
+    else{
+      pre_played.push(match);
+    }
+  });
+  const results = {  pre_played_matches: pre_played, post_played_match: post_played };
 
+  return results;
+}
 
 exports.extractRelevantData = extractRelevantData;
 exports.addMatch = addMatch;

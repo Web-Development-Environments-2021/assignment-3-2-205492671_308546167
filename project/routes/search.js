@@ -34,14 +34,14 @@ router.get("/team/search", async (req, res, next) => {
         if (!(await league_utils.getLeagueTeams(league_utils.getLeagueId())).includes(results[0].team_id)){
           throw({status: 404, message: "team_id not found"});
         }
-
         if (req.query.sorted){
             search_utils.sortArray(results, function(a,b){
                 return a.fullname - b.fullname;
             })
         }
         res.status(200).send(results);
-    } catch (error) {
+    } 
+    catch (error) {
         next(error);
     }
 });
@@ -56,19 +56,14 @@ router.get("/player/page/:player_id", async (req, res, next) => {
     }
 });
 
-
-
-
-
-
-
 router.get("/search/player", async (req, res, next) => {
   try {
     const players = await players_utils.getPlayersBySeasonId(await league_utils.getSeasonID());
     const results = await players_utils.extractRelevantPlayerData(players);
-
+    
     res.status(200).send(results);
-  } catch (error) {
+  } 
+  catch (error) {
     next(error);
   }
 });
@@ -79,14 +74,11 @@ router.get("/search/team", async (req, res, next) => {
     const results = await teams_utils.extractRelevantTeamData(teams);
 
     res.status(200).send(results);
-  } catch (error) {
+  } 
+  catch (error) {
     next(error);
   }
 });
-
-
-
-
 
 module.exports = router;
 

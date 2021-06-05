@@ -2,9 +2,6 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require("./DButils");
 
-// const TEAM_ID = "85";
-
-
 async function getTeamsByName(team_name) {
   try{
     const teams = await axios.get(`${api_domain}/teams/search/${team_name}`, {

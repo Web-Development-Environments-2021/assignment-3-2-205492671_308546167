@@ -6,7 +6,7 @@ async function markMatchAsFavorite(user_id, match_id) {
   try{
     await DButils.execQuery(
       `insert into favorite_matches values ('${user_id}',${match_id})`
-  );
+    );
   }
   catch(error){
       if (error.class == 14){
@@ -35,8 +35,6 @@ async function getFavoriteMatches(user_id) {
   );
   return matches;
 }
-
-
 
 async function getUserRoles(user_id) {
   const names_list = [];

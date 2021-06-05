@@ -413,42 +413,55 @@ components:
           example: Messi foueled Ronaldo and got a yellow card
     match:
       required:
-      - away_team
-      - court
-      - date
-      - home_team
       - match_id
+      - home_team
+      - away_team
+      - league
+      - season
+      - stage
+      - court
       - referee_name
+      - date
+
       type: object
       properties:
         match_id:
           type: string
           description: unique match id
-          example: RX23231F
+          example: 1
         home_team:
           type: string
           description: The host team's name
-          example: Hapoel Tel-Aviv
+          example: Silkeborg
         away_team:
           type: string
           description: The guest team's name
-          example: Hapoel Beer-Sheva
+          example: Midtjylland
+        league:
+          type: string
+          description: league_id
+          example: '271'
+        season:
+          type: string
+          description: The season
+          example: "2021/2022"
         court:
           type: string
           description: The court's id
           example: "1121"
-        season:
+        stage:
           type: string
-          description: The season
-          example: "2020/2021"
+          description: The stage's name
+          example: "Regular Season"
         referee_name:
           type: string
           description: The referee's name
-          example: Ron
+          example: ref
         date:
           type: string
           description: The match's date
           format: date
+          example: "2021-06-05"
         eventlog:
           type: array
           description: The log events of the match

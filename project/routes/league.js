@@ -13,7 +13,6 @@ router.get("/summary", async (req, res, next) => {
   }
 });
 
-
 router.get("/current_fixture", async (req, res, next) => {
   try{
     const current_fixture = await match_utils.getCurrentFixture(await league_utils.getLeagueId());
@@ -22,17 +21,10 @@ router.get("/current_fixture", async (req, res, next) => {
     }
     results = await match_utils.prePostMatches(current_fixture);
     res.status(200).send(results);
-  
   }
   catch(error){
     next(error)
-
   }
-  
 });
-
-
-
-
 
 module.exports = router;
