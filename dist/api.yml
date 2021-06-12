@@ -382,7 +382,7 @@ components:
           type: string
           format: email
           example: Suban@gmail.com
-        profile picture:
+        profile_picture:
           type: string
           description: Link to the profile image, recommended to add picture from cloudinary
           format: URL

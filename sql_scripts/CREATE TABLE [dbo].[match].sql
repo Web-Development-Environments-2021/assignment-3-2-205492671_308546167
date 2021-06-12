@@ -8,5 +8,7 @@ CREATE TABLE [dbo].[match](
 	court [varchar] (300) NOT NULL,
 	referee_name [varchar](300) NOT NULL,
 	date [varchar](300) NOT NULL,
-	score [varchar] (300)
+	score [varchar] (300),
+	CONSTRAINT FK_match_league FOREIGN KEY (league)
+	REFERENCES league(league_id)
 )
