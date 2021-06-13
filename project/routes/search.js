@@ -39,7 +39,7 @@ router.get("/team/search", async (req, res, next) => {
                 return a.fullname - b.fullname;
             })
         }
-        res.status(200).send(results);
+        res.status(200).send({ search_team: results });
     } 
     catch (error) {
         next(error);
@@ -61,7 +61,7 @@ router.get("/search/player", async (req, res, next) => {
     const players = await players_utils.getPlayersBySeasonId(await league_utils.getSeasonID());
     const results = await players_utils.extractRelevantPlayerData(players);
     
-    res.status(200).send(results);
+    res.status(200).send({ search_player: results });
   } 
   catch (error) {
     next(error);
@@ -73,7 +73,7 @@ router.get("/search/team", async (req, res, next) => {
     const teams = await teams_utils.getTeamsBySeasonId(await league_utils.getSeasonID());
     const results = await teams_utils.extractRelevantTeamData(teams);
 
-    res.status(200).send(results);
+    res.status(200).send({ search_team: results });
   } 
   catch (error) {
     next(error);
