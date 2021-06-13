@@ -21,7 +21,7 @@ router.get("/player/search", async (req, res, next) => {
       if (req.query.sorted && req.query.sorted == "player name"){
         search_utils.sortArray(results, "fullname");
       }
-      res.status(200).send(results);
+      res.status(200).send({ search_player: results });
     } catch (error) {
       next(error);
     }
