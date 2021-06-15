@@ -30,7 +30,7 @@ async function extractRelevantData(matches){
   let match_ids = [];
   matches.map(match=>match_ids.push(match.match_id));
   let events = await getMatchEvents(match_ids);
-  matches.map(match=>results.push({
+  await matches.map(async match=>results.push({
     
     "match_id": match.match_id,
     "home_team": match.home_team,
@@ -39,6 +39,8 @@ async function extractRelevantData(matches){
     "season": match.season,
     "referee_name": match.referee_name,
     "date": match.date,
+    "league": await league_utils.getLeagueId(),
+    "stage": await league_utils.getCurrentStage(),
     "eventlog": getEventsByMatchId(match.match_id, events),
     "score": match.score
   }))

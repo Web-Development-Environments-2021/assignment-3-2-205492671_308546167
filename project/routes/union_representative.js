@@ -143,7 +143,7 @@ router.get("/matches/:league_id", async (req, res, next) => {
         throw({ status: 400, message: "didnt find available data on league" });
       }
       let results = await match_utils.extractRelevantData(matches);
-      res.status(200).send(results);
+      res.status(200).send({ season_matches: results });
     
     }
     catch(error){
