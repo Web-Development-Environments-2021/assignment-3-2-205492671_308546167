@@ -576,7 +576,12 @@ components:
           description: The players of the favorite players
           items:
             $ref: '#/components/schemas/partial_player'
-        matches:
+        pre_play_matches:
+          type: array
+          description: The team's matches
+          items:
+            $ref: '#/components/schemas/match'
+        post_play_matches:
           type: array
           description: The team's matches
           items:

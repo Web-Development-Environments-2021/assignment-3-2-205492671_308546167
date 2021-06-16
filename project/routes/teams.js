@@ -24,7 +24,7 @@ router.get("/page/:team_id", async (req, res, next) => {
     let results = { team_id: req.params.team_id,
                     team_players: players_detail,
                     pre_play_matches: prePostlists.pre_played_matches,
-                    post_play_matches: prePostlists.post_played_match}
+                    post_play_matches: prePostlists.post_played_matches}
     res.status(200).send(results);
   } 
   catch (error) {
