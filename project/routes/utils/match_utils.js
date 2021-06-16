@@ -126,7 +126,7 @@ async function prePostMatches(all_matches){
       pre_played.push(match);
     }
   });
-  const results = {  pre_played_matches: pre_played, post_played_match: post_played };
+  const results = {  pre_played_matches: pre_played, post_played_matches: post_played };
 
   return results;
 }
