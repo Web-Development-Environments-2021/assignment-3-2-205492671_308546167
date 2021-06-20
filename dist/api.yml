@@ -597,7 +597,7 @@ components:
     partial_team:
       required:
       - team_id
-      - team_logo
+      - image
       - team_name
       type: object
       properties:
@@ -609,7 +609,7 @@ components:
           type: string
           description: The team's name
           example: AGF
-        team_logo:
+        image:
           type: string
           description: The url of team's logo image
           example: https://cdn.sportmonks.com/images//soccer/teams/25/2905.png
