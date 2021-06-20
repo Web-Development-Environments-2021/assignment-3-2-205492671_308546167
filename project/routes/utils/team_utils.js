@@ -4,7 +4,7 @@ const DButils = require("./DButils");
 
 async function getTeamsByName(team_name) {
   try{
-    const teams = await axios.get(`${api_domain}/teams/search/${team_name}`, {
+    const teams = await axios.get(`${api_domain}/teams/search/${encodeURI(team_name)}`, {
       params: {
         api_token: process.env.api_token,
       },
