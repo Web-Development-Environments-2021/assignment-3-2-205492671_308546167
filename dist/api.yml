@@ -52,7 +52,7 @@ paths:
         "401":
           description: Username or Password incorrect
 
-  /auth/logout:
+  /user/logout:
     post:
       tags:
       - auth
