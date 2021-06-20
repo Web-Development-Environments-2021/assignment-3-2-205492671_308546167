@@ -56,7 +56,7 @@ router.get("/favorites/matches", async (req, res, next) => {
 });
 
 
-router.post("/Logout", function (req, res) {
+router.put("/Logout", function (req, res) {
   if (!req.session || !req.session.user_id){
     throw { status: 412, message: "no user is logged in" };
   }
