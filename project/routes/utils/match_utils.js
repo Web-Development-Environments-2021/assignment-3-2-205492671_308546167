@@ -3,8 +3,8 @@ const league_utils = require("./league_utils");
 
 async function addMatch(match){
     await DButils.execQuery(
-        `INSERT INTO match (home_team, away_team, league, season, stage, court, referee_name, date, score) VALUES
-         ('${match.home_team}','${match.away_team}','${match.league_id}', '${match.season}',
+        `INSERT INTO match (home_team, away_team, home_team_logo, away_team_logo, league, season, stage, court, referee_name, date, score) VALUES
+         ('${match.home_team}','${match.away_team}','${match.home_team_logo}','${match.away_team_logo}' ,'${match.league_id}', '${match.season}',
         '${match.stage}', '${match.court}', '${match.referee_name}', '${match.date}', NULL)`
       );    
 }
