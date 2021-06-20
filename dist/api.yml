@@ -53,7 +53,7 @@ paths:
           description: Username or Password incorrect
 
   /user/logout:
-    post:
+    put:
       tags:
       - auth
       summary: logout from server
