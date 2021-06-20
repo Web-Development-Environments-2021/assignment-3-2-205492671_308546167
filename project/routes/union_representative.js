@@ -115,11 +115,13 @@ router.post("/match", async (req, res, next) => {
         }
         
         // check court of home team
-        let match_court = home_team.venue_id
+        let match_court = home_team.venue.data.name
         // add match (home team, away team, ref, court, date, stage)
         await match_utils.addMatch({
             home_team: req.body.home_team_name,
             away_team: req.body.away_team_name,
+            home_team_logo: home_team.logo_path,
+            away_team_logo: away_team.logo_path,
             league_id: league_id,
             season: await league_utils.getSeasonName(),
             stage: await league_utils.getCurrentStage(),

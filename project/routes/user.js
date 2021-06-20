@@ -49,7 +49,7 @@ router.get("/favorites/matches", async (req, res, next) => {
     const user_id = req.session.user_id;
     const matches = await users_utils.getFavoriteMatches(user_id);
     const fav_matches_relevent = await match_utils.prePostMatches(matches);
-    res.status(200).send(fav_matches_relevent.pre_played_matches.slice(0,3));
+    res.status(200).send(fav_matches_relevent.pre_played_matches);
   } catch (error) {
     next(error);
   }

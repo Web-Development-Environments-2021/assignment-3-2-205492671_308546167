@@ -2,6 +2,8 @@ CREATE TABLE [dbo].[match](
 	match_id [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	home_team [varchar](300) NOT NULL,
 	away_team [varchar](300) NOT NULL,
+	home_team_logo [varchar](300),
+	away_team_logo [varchar](300),
 	league [varchar] (300) NOT NULL,
 	season [varchar] (300) NOT NULL,
 	stage [varchar] (300) NOT NULL,

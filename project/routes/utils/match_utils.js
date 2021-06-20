@@ -35,6 +35,8 @@ async function extractRelevantData(matches){
     "match_id": match.match_id,
     "home_team": match.home_team,
     "away_team": match.away_team,
+    "home_team_logo": match.home_team_logo,
+    "away_team_logo": match.away_team_logo,
     "court": match.court,
     "season": match.season,
     "referee_name": match.referee_name,

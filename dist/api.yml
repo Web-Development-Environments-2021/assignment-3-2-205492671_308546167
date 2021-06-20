@@ -437,6 +437,14 @@ components:
           type: string
           description: The guest team's name
           example: Midtjylland
+        home_team_logo:
+          type: string
+          description: The host team's url logo
+          example: https://cdn.sportmonks.com/images//soccer/teams/5/293.png
+        away_team_logo:
+          type: string
+          description: The guest team's url logo
+          example: https://cdn.sportmonks.com/images//soccer/teams/5/293.png
         league:
           type: string
           description: league_id
