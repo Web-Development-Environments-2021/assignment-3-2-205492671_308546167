@@ -54,8 +54,10 @@ async function extractRelevantPlayerData(players_info) {
   return filterd.map((player_info) => {
     const { player_id,  fullname, image_path, position_id} = player_info;
     let team_name = "None";
+    let team_logo = "None";
     if (player_info.team){
       team_name = player_info.team.data.name;
+      team_logo = player_info.team.data.logo_path;
     }
   return {
     player_id: player_id,
@@ -63,6 +65,7 @@ async function extractRelevantPlayerData(players_info) {
     picture: image_path,
     position_num: position_id,
     team_name: team_name,
+    team_logo: team_logo
   };
   });
 }
