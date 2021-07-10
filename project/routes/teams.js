@@ -18,7 +18,7 @@ router.get("/page/:team_id", async (req, res, next) => {
     // get all team's matches
     let team_name = players_detail[0].team_name;
     let team_logo = players_detail[0].team_logo;
-    let season = league_utils.getSeasonName();
+    let season = await league_utils.getSeasonName();
     let team_matches = await team_utils.teamSeasonMatches(team_name,season);
     let prePostlists = await match_utils.prePostMatches(team_matches);
     
