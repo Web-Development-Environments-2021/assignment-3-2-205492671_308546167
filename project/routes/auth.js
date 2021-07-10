@@ -50,7 +50,7 @@ router.post("/login", async (req, res, next) => {
         
     const roles_list = await users_utils.getUserRoles(user.user_id);
     // return roles
-    res.status(200).send({ roles: roles_list });
+    res.status(200).send({ roles: roles_list, profile_picture: user.profile_picture });
   } catch (error) {
     next(error);
   }
